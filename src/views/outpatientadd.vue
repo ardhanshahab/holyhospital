@@ -131,8 +131,8 @@
           <b-form-input id="input-4" v-model="queue" trim class="hdrop"></b-form-input>
         </b-form-group>
         <div class="d-flex justify-content-end">
-        <b-btn @click="onSubmit()">Submit</b-btn>
-        <b-btn @click="onReset()">Reset</b-btn>
+        <b-btn class="unguprimary" @click="onSubmit()">Submit</b-btn>
+        <b-btn class="unguprimary" @click="onReset()">Reset</b-btn>
         </div>
 
               </b-col>
