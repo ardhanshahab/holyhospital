@@ -1,5 +1,6 @@
 import router from "@/router"
 import { removeHeaderToken, setHeaderToken } from "@/utils/auth"
+// 
 import axios from "axios"
 import VueCookie from "vue-cookie"
 export default{
@@ -33,15 +34,14 @@ export default{
                  const token = response.data.jwt.access_token  
                  localStorage.setItem('token', token) 
                  setHeaderToken(token) 
-                 dispatch('get_user')
+                  dispatch('get_user')
                  resolve(response)
                  console.log(response.data.data.full_name)
                  const tokennama = response.data.data.full_name
                  localStorage.setItem('nama', tokennama) 
                  const tokenroles = response.data.data.roles
                  localStorage.setItem('roles', tokenroles) 
-                
-                
+                console.log(response)
                 })
                .catch(err => {
                  commit('reset_user')  

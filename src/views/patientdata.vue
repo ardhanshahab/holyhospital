@@ -26,6 +26,7 @@
     <tr class="lightdark-a">
       <th scope="col">Kode Pasien</th>
       <th scope="col">Nama Pasien</th>
+      <th scope="col">Golongan Darah</th>
       <th scope="col">NIK</th>
       <th scope="col">Jenis Kelamin</th>
       <th scope="col">Action</th>
@@ -33,8 +34,9 @@
   </thead>
   <tbody v-if="totalRows > 1">
     <tr v-for="(user) in searchItem" :key="user.id" id="my-table" class="lightdark-b ">
-      <td scope="row">{{user.code}}</td>
+      <td scope="row">{{user.patient_code}}</td>
       <td scope="row">{{user.full_name}}</td>
+      <td scope="row">{{user.bloodtype}}</td>
       <td scope="row">{{user.national_id}}</td>
       <td scope="row">{{user.gender}}</td>
       <td><button @click="redirect(user.id)" class="btn w100 btn-primary">EDIT</button></td>
@@ -129,8 +131,8 @@ export default {
     async mounted(){
          try {
     const response1 = await axios.get('patient');
-   this.items = response1.data.data;
-    console.log(response1.data)
+   this.items = response1.data.patient;
+    console.log(response1.data.patient)
   } catch(e) {
     console.log(e);
   }

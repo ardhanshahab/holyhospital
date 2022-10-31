@@ -23,21 +23,21 @@
      <th scope="col">Nomor Antrian</th>
     <th scope="col">Kode Pasien</th>
     <th scope="col">Nama Pasien</th>
-    <!-- <th scope="col">Tanggal Daftar</th>
-    <th scope="col">Jenis Poli</th> -->
-    <th scope="col">Nama Dokter</th>
+    <th scope="col">Golongan Darah</th>
+    <th scope="col">Jenis Kelamin</th>
+    <!-- <th scope="col">Nama Dokter</th> -->
     <th scope="col">Tanggal Kontrol</th>
     </tr>
   </thead>
   <tbody>
     <tr v-for="item in filterItem" :key="item" class="text-center">
-      <td scope="row">{{item.queue}}</td>
+      <td scope="row">{{item.medicSessionByMedicSession.queue}}</td>
     <td scope="row">{{item.patient_code}}</td>
     <td scope="row">{{item.full_name}}</td>
-    <!-- <td scope="row">{{item.date_check}}</td>
-    <td scope="row">{{item.facility}}</td> -->
-    <td scope="row">{{item.doctor}}</td>
-    <td scope="row">{{item.date_check}}</td>
+    <td scope="row">{{item.bloodtype}}</td>
+    <td scope="row">{{item.gender}}</td>
+    <!-- <td scope="row">{{item.doctor}}</td> -->
+    <td scope="row">{{item.medicSessionByMedicSession.datecheck}}</td>
     </tr>    
   </tbody>
 </table>
@@ -76,14 +76,11 @@ export default {
 filterItem() {
       let filterType = this.selectedType;
       let startDate = this.localizeDate(this.startDate);
-      let endDate = this.localizeDate(this.endDate);
-      console.log(startDate)
-      console
-      
+      let endDate = this.localizeDate(this.endDate);      
       const itemsByType = filterType ? this.items.filter(item => item.type === filterType) : this.items
       return itemsByType
         .filter(item => {
-          const itemDate = new Date(item.date_check)
+          const itemDate = new Date(item.medicSessionByMedicSession.datecheck)
           if (startDate && endDate) {
             return startDate <= itemDate && itemDate <= endDate;
           }
@@ -96,10 +93,10 @@ filterItem() {
           return true;
         })
     },
- listPatient() {
-            const items = this.$store.state.pokemon.items
-            return items;
-            },
+//  listPatient() {
+//             const items = this.$store.state.pokemon.items
+//             return items;
+//             },
     },
 
     data() {
@@ -166,8 +163,8 @@ filterItem() {
  async mounted(){
     //this.fetchOutpatient()
     try {
-    const response1 = await axios.get('outpatient');
-   this.items = response1.data.data;
+    const response1 = await axios.get('outpatient/list');
+   this.items = response1.data.patient;
 //    const dataOne = response1.data.data
     console.log(response1.data)
 //    console.log(response1.data.data.id)

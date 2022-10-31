@@ -45,19 +45,19 @@
                     <b-row class="mb-2">
             <b-col cols="2" class="text-sm-right"><b>Keluhan</b></b-col>
             <b-col cols="1" class="d-flex justify-content-end">:</b-col>
-            <b-col cols="9"><b-card class="">{{ row.item.complaint }}</b-card></b-col>
+            <b-col cols="9"><b-card class="">{{ row.item.medic_records[0].complaint }}</b-card></b-col>
           </b-row>
 
                     <b-row class="mb-2">
             <b-col cols="2" class="text-sm-right"><b>Hasil Diagnosa</b></b-col>
             <b-col cols="1" class="d-flex justify-content-end">:</b-col>
-            <b-col cols="9"><b-card class="">{{ row.item.diagnose }}</b-card></b-col>
+            <b-col cols="9"><b-card class="">{{ row.item.medic_records[0].diagnose }}</b-card></b-col>
           </b-row>
 
                     <b-row class="mb-2">
             <b-col cols="2" class="text-sm-right"><b>Resep Obat</b></b-col>
             <b-col cols="1" class="d-flex justify-content-end">:</b-col>
-            <b-col cols="9"><b-card class="">{{ row.item.prescription }}</b-card></b-col>
+            <b-col cols="9"><b-card class="">{{ row.item.medic_records[0].drug }}</b-card></b-col>
           </b-row>
       </b-card>
       </template>
@@ -110,11 +110,11 @@ export default {
     data() {
       return {
         fields: [
-                { key: 'serial_number', label: 'Kode Pasien', thStyle: {background: '#DDDDDD', color: 'black'} },
-                { key: 'patient_name', label: 'Nama Pasien', thStyle: {background: '#DDDDDD', color: 'black'} },
-                { key: 'facility', label: 'Jenis Poli', thStyle: {background: '#DDDDDD', color: 'black'} }, 
-                { key: 'doctor', label: 'Nama Dokter', thStyle: {background: '#DDDDDD', color: 'black'} },
-                { key: 'date_check', label: 'Tanggal Kontrol', thStyle: {background: '#DDDDDD', color: 'black'} },
+                { key: 'patient_code', label: 'Kode Pasien', thStyle: {background: '#DDDDDD', color: 'black'} },
+                { key: 'full_name', label: 'Nama Pasien', thStyle: {background: '#DDDDDD', color: 'black'} },
+                { key: 'medic_records[0].medic_facility.name', label: 'Jenis Poli', thStyle: {background: '#DDDDDD', color: 'black'} }, 
+                { key: 'medic_records[0].medicalStaffByMedicalStaff.name', label: 'Nama Dokter', thStyle: {background: '#DDDDDD', color: 'black'} },
+                { key: 'medic_records[0].datecheck', label: 'Tanggal Kontrol', thStyle: {background: '#DDDDDD', color: 'black'} },
                 { key: 'show_detail', label: 'Action', thStyle: {background: '#DDDDDD', color: 'black'} },                
                 ],
         items:[],
@@ -160,9 +160,9 @@ export default {
    // this.fetchOutpatient()
   try {
     const response1 = await axios.get('outpatient/report');
-   this.items = response1.data.data;
+   this.items = response1.data.patient;
 //    const dataOne = response1.data.data
-    console.log(response1.data)
+    console.log(response1.data.patient)
 //    console.log(response1.data.data.id)
     // const response2 = await axios.get(`http://localhost:8080/api/outpatient/:id/process`);
     // this.arrayTwo = response2.data.data;

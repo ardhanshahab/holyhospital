@@ -51,16 +51,15 @@
   </thead>
   <tbody v-if="searchItem">
     <tr v-for="(user) in searchItem" :key="user.id" id="my-table">
-      <td scope="row">{{user.full_name}}</td>
+      <td scope="row">{{user.username}}</td>
       <td scope="row">{{user.email}}</td>
       <td scope="row">{{user.gender}}</td>
-      <td scope="row">{{user.roles}}</td>
+      <td scope="row">{{user.role.name}}</td>
       <td><button @click="redirect(user.id)">EDIT</button></td>
     </tr>
   </tbody>
-  <tbody v-if="totalRows == 0" class="d-block justify-content-center my-2">
-      <p>Sorry, no matches were found</p>
-      <p>Try a new Search</p>
+  <tbody v-if="totalRows == 0" class="d-block text-center justify-content-center my-2">
+      <p class="center">Loading...</p>
   </tbody>
 </table>
     </div>
@@ -89,10 +88,10 @@ export default {
     data(){
       return{
         fields: [
-                { key: 'full_name', label: 'Nama User', thStyle: {background: '#DDDDDD', color: 'black'} },
+                { key: 'username', label: 'Nama User', thStyle: {background: '#DDDDDD', color: 'black'} },
                 { key: 'email', label: 'Email', thStyle: {background: '#DDDDDD', color: 'black'} }, 
                 { key: 'gender', label: 'Jenis Kelamin', thStyle: {background: '#DDDDDD', color: 'black'} },
-                { key: 'roles', label: 'Role', thStyle: {background: '#DDDDDD', color: 'black'} },
+                { key: 'role', label: 'Role', thStyle: {background: '#DDDDDD', color: 'black'} },
                 { key: 'id', label: 'Action', thStyle: {background: '#DDDDDD', color: 'black'} },                
                 ],
         items: [],
@@ -148,8 +147,8 @@ export default {
   async mounted() {
             try {
     const response1 = await axios.get('user');
-   this.items = response1.data.data;
-    console.log(response1.data)
+   this.items = response1.data.user;
+    console.log(response1.data.user)
   } catch(e) {
     console.log(e);
   }

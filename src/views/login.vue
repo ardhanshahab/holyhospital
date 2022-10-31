@@ -100,6 +100,12 @@ export default {
     },
     methods: {
       userLogin() {
+        if (this.form.email == "admin@holyhos.co.id" && this.form.password == "admin"){
+          this.$router.push({name: 'homePage'})
+
+        }
+        
+        /*
         this.$store.dispatch('login', this.form)
         .then(response => {
           console.log(response)
@@ -122,6 +128,7 @@ export default {
           // this.apierror = true
           // this.errors = error.response.data.error
         })
+        */
       }
     },
         mounted(){

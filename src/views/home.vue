@@ -2,18 +2,19 @@
 <div class="">
     <div class="hero ungusecondary">
         <div class="imageprofile">
-        <b-img rounded="circle" src="https://picsum.photos/200/200/?image=54" alt="Image 1"></b-img>
+          <h3>Selamat Datang, Admin</h3>
+          <h5>Selamat Bekerja</h5>
         </div>
-        <div class="nameprofile">
+        <!-- <div class="nameprofile">
         <h3>{{nama}}</h3>
         <p>{{roles}}</p>
-        </div>
+        </div> -->
         <div class="icon">
             <img src = "../assets/Illu/illus2.svg" width="180" alt="My Happy SVG" class="bgbanner"/>
 
-            <svg height="250" width="600">
+            <svg height="250" width="500">
               
-  <ellipse cx="350" cy="110" rx="300" ry="230"
+  <ellipse cx="350" cy="110" rx="310" ry="230"
   class="elips" />
 </svg>
         </div>
@@ -111,7 +112,8 @@ export default {
     height: 250;
 }
 .imageprofile {
-    margin-left: 105px;
+  color: white;
+    margin-left: 40px;
     margin-top: 20px;
 }
 .nameprofile {

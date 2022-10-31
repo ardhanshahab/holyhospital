@@ -12,10 +12,11 @@ import { setHeaderToken } from './utils/auth'
 import VueLocalStorage from 'vue-localstorage'
 Vue.use(VueLocalStorage)
 import VueCookie from 'vue-cookie'
+import { createProvider } from './vue-apollo'
 Vue.use(VueCookie)
 
 
-axios.defaults.baseURL = 'https://go-hospital-server.herokuapp.com/api/'
+axios.defaults.baseURL = 'https://holyhos.hasura.app/api/rest/'
 Vue.component('default-layout', defaultLayout)
 Vue.component('blank-layout', blankLayout)
 
@@ -30,13 +31,14 @@ const token = localStorage.getItem('token');
 
 if (token) { 
   setHeaderToken(token) 
-} 
+}
 
 store.dispatch('get_user', token)
 .then(() => {
   new Vue({
     router,
     store,
+    apolloProvider: createProvider(),
     render: h => h(App)
   }).$mount('#app')
 }).catch((error) => {
