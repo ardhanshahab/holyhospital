@@ -1,0 +1,12 @@
+mutation editpatient ($id: Int!, $full_name: String!, $bloodtype: String!, $birthdate: date, $address: String, $gender: String, $national_id: numeric, $patient_code: String) {
+  update_patient_by_pk(pk_columns: {id: $id}, _set: {full_name: $full_name, bloodtype: $bloodtype, birthdate: $birthdate, address: $address, gender: $gender, national_id: $national_id, patient_code: $patient_code}) {
+    address
+    birthdate
+    bloodtype
+    full_name
+    gender
+    id
+    national_id
+    patient_code
+  }
+}

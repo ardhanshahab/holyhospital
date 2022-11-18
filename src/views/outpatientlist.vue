@@ -16,8 +16,21 @@
           </div>
         </div>
         <div class="d-block cardinput lightdark-b tablelong">
-<!-- <div class="card-body"> -->
-        <table class="table ">
+
+  <template>
+  <ApolloQuery
+    :query="require('../graphql/outpatientreport.gql')"
+  >
+    <template v-slot="{ result: { loading, error, data } }">
+      <!-- Loading -->
+      <div v-if="loading" class="loading apollo">Loading...</div>
+
+      <!-- Error -->
+      <div v-else-if="error" class="error apollo">An error occurred</div>
+
+      <!-- Result -->
+      <div v-else-if="data" class="result apollo">
+        <table class="table">
   <thead class="lightdark-a">
     <tr class="text-center">
      <th scope="col">Nomor Antrian</th>
@@ -25,22 +38,36 @@
     <th scope="col">Nama Pasien</th>
     <th scope="col">Golongan Darah</th>
     <th scope="col">Jenis Kelamin</th>
-    <!-- <th scope="col">Nama Dokter</th> -->
-    <th scope="col">Tanggal Kontrol</th>
+    <th scope="col">Nama Dokter</th>
+    <!-- <th scope="col">Tanggal Kontrol</th> -->
     </tr>
   </thead>
   <tbody>
-    <tr v-for="item in filterItem" :key="item" class="text-center">
-      <td scope="row">{{item.medicSessionByMedicSession.queue}}</td>
+    <tr v-for="item in data.patient" :key="item.id" class="text-center">
+      <td scope="row">{{item.id}}</td>
     <td scope="row">{{item.patient_code}}</td>
     <td scope="row">{{item.full_name}}</td>
     <td scope="row">{{item.bloodtype}}</td>
     <td scope="row">{{item.gender}}</td>
-    <!-- <td scope="row">{{item.doctor}}</td> -->
-    <td scope="row">{{item.medicSessionByMedicSession.datecheck}}</td>
+    <!-- <td scope="row">{{item.medical_staff.name}}</td> -->
+    <!-- <td scope="row">{{item.medicSessionByMedicSession.datecheck}}</td> -->
     </tr>    
   </tbody>
 </table>
+      </div>
+      <!-- No result -->
+      <div v-else class="no-result apollo">
+        <b-skeleton-table
+                :rows="7"
+                :columns="10"
+                :table-props="{ bordered: true, striped: true }"
+              ></b-skeleton-table>
+          </div>
+    </template>
+  </ApolloQuery>
+</template>
+
+        
 <!-- </div> -->
 </div>
 
@@ -60,7 +87,7 @@
 
 <script>
 //import Vue from 'vue'
-import axios from 'axios'
+// import axios from 'axios'
 export default {
     name: "outpatientList",
         computed: {
@@ -73,26 +100,26 @@ export default {
             const z = y / x  
             return Math.floor(z) + 1       
             },
-filterItem() {
-      let filterType = this.selectedType;
-      let startDate = this.localizeDate(this.startDate);
-      let endDate = this.localizeDate(this.endDate);      
-      const itemsByType = filterType ? this.items.filter(item => item.type === filterType) : this.items
-      return itemsByType
-        .filter(item => {
-          const itemDate = new Date(item.medicSessionByMedicSession.datecheck)
-          if (startDate && endDate) {
-            return startDate <= itemDate && itemDate <= endDate;
-          }
-          if (startDate && !endDate) {
-            return startDate <= itemDate;
-          }
-          if (!startDate && endDate) {
-            return itemDate <= endDate;
-          }
-          return true;
-        })
-    },
+// filterItem() {
+//       let filterType = this.selectedType;
+//       let startDate = this.startDate;
+//       let endDate = this.endDate;      
+//       const itemsByType = filterType ? this.items.filter(item => item.type === filterType) : this.items
+//       return itemsByType
+//         .filter(item => {
+//           const itemDate = new Date(item.datecheck)
+//           if (startDate && endDate) {
+//             return startDate <= itemDate && itemDate <= endDate;
+//           }
+//           if (startDate && !endDate) {
+//             return startDate <= itemDate;
+//           }
+//           if (!startDate && endDate) {
+//             return itemDate <= endDate;
+//           }
+//           return true;
+//         })
+//     },
 //  listPatient() {
 //             const items = this.$store.state.pokemon.items
 //             return items;
@@ -101,22 +128,10 @@ filterItem() {
 
     data() {
       return {
-        // paginatedItems: this.items,
         selectedType: '',
         startDate:null,
         endDate:null,
         value: '',
-        // fields: [
-        //         { key: 'id', label: 'Nomor Antrian', thStyle: {background: '#DDDDDD', color: 'black'} }, 
-        //         { key: 'serial_number', label: 'Kode Pasien', thStyle: {background: '#DDDDDD', color: 'black'} },
-        //         { key: 'patient_name', label: 'Nama Pasien', thStyle: {background: '#DDDDDD', color: 'black'} },
-        //         { key: 'date_check', label: 'Tanggal Daftar', thStyle: {background: '#DDDDDD', color: 'black',} },
-        //         { key: 'facility', label: 'Jenis Poli', thStyle: {background: '#DDDDDD', color: 'black'} }, 
-        //         { key: 'doctor', label: 'Nama Dokter', thStyle: {background: '#DDDDDD', color: 'black'} },
-        //         { key: 'date_check', label: 'Tanggal Kontrol', thStyle: {background: '#DDDDDD', color: 'black'} },
-        //         // { key: 'show_detail', label: 'Action', thStyle: {background: '#DDDDDD', color: 'black'} },                
-                
-        //         ],
         items: [],
         tableVariants: [
           'primary',
@@ -135,46 +150,10 @@ filterItem() {
         sortBy: '',
         perPage: 10,
         currentPage: 1,
-
-
-        
 }
     },
  
-    methods: {
-      localizeDate(date) {
-      // Date picker uses ISO format (yyyy-mm-dd), which is UTC. The data
-      // contains locale specific date strings (mm/dd/yyyy), which `Date`
-      // parses with local time-zone offset instead of UTC. Normalize the
-      // ISO date so we're comparing local times.
-      if (!date || !date.includes('-')) return date
-      const [yyyy, mm, dd] = date.split('-')
-      return new Date(`${mm}/${dd}/${yyyy}`)
-    },
-    formatDate(date) {
-      return new Intl.DateTimeFormat('en-US', { dateStyle: 'long' }).format(new Date(date))
-    },
-    // fetchOutpatient(){
-    //       this.$store.dispatch('outpatient/fetchoutpatientList')
-    //       const listItems = this.$store.state.outpatient.items
-    //       this.items = listItems
-    //     },
-    },
- async mounted(){
-    //this.fetchOutpatient()
-    try {
-    const response1 = await axios.get('outpatient/list');
-   this.items = response1.data.patient;
-//    const dataOne = response1.data.data
-    console.log(response1.data)
-//    console.log(response1.data.data.id)
-    // const response2 = await axios.get(`http://localhost:8080/api/outpatient/:id/process`);
-    // this.arrayTwo = response2.data.data;
-    // console.log(this.arrayTwo)
-  } catch(e) {
-    console.log(e);
-  }
-  }
+  
 }
 </script>
 

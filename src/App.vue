@@ -1,14 +1,22 @@
 <template>
+  <b-overlay
+          id="overlay-background"
+          :show="show"
+          :rounded="rounded"
+          :isLoading="isLoading"
+        >
 <div class="noscroll">
     <component :is="layout">
-      <router-view></router-view>
+      
+      <router-view v-if="!isLoading"></router-view>
     </component>
 </div>
+</b-overlay>
 </template>
 
 <script>
-//import defaultlayoutVue from './layout/defaultlayout.vue'
-//import defaultLayout from './layout/defaultlayout.vue'
+//import Loadingscreen from './components/loadingscreen.vue';
+
 const defaultLayout = 'default'
 export default {
   name: 'App',
@@ -18,7 +26,20 @@ export default {
     }
   },
   components: {
-  //  defaultLayout
+    //Loadingscreen
+  },
+  data() {
+    return {
+      isLoading: true,
+      show: true,
+      rounded: 'lg'
+    }
+  },
+  mounted() {
+    setTimeout(() => {
+      this.isLoading = false;
+      this.show = false;
+    }, 3000);
   }
 }
 </script>

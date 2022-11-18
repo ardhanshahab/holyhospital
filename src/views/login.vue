@@ -102,7 +102,9 @@ export default {
       userLogin() {
         if (this.form.email == "admin@holyhos.co.id" && this.form.password == "admin"){
           this.$router.push({name: 'homePage'})
-
+        }else{
+          this.showTop = true
+            this.message = "email atau password salah"
         }
         
         /*

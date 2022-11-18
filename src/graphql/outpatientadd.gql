@@ -1,0 +1,7 @@
+query MyQuery ($patient_code: String!) {
+  patient(where: {patient_code: {_eq: $patient_code}}) {
+    id
+    full_name
+    patient_code
+  }
+}

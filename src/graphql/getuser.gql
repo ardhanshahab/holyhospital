@@ -1,0 +1,13 @@
+query getuser {
+    user {
+    id
+    email
+    password
+    username
+    gender
+    role {
+      id
+      name
+    }
+  }
+}

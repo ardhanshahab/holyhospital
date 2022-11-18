@@ -14,54 +14,61 @@
             USER LIST
             
     </div>
-    <div class="search">
+
+    <!-- <div class="search">
     <div class="input-group mb-3">
   <input type="search" class="form-control" placeholder="Search Name or Email" v-model="keyword">
   <button class="input-group-text" @click="searchItem()"><img class="img11" src="../assets/search.png"></button>
     </div>
-</div>
+</div> -->
 
     <div class="card-body">
-      
-    <!-- <b-table
-      id="my-table"
-      :items="items"
-      :fields="fields"
-      :per-page="perPage"
-      :current-page="currentPage"
-      sort-desc
+      <template>
+  <ApolloQuery
+    :query="require('../graphql/getuser.gql')"
+  >
+    <template v-slot="{ result: { loading, error, data } }">
+      <!-- Loading -->
+      <div v-if="loading" class="loading apollo">Loading...</div>
 
-      class="text-center lightdark-b"
-    >
-    <template #cell(id)>
-      <button @click="redirect(id)" class="btn btn-primary me-md-2" type="button">EDIT</button>
+      <!-- Error -->
+      <div v-else-if="error" class="error apollo">An error occurred</div>
+
+      <!-- Result -->
+      <div v-else-if="data" class="result apollo">
+                  <table class="table" id="my-table">
+            <thead>
+              <tr>
+                <th scope="col">Nama User</th>
+                <th scope="col">Email</th>
+                <th scope="col">Jenis Kelamin</th>
+                <th scope="col">Role</th>
+                <th scope="col">Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="user in data.user" :key="user.id" id="my-table">
+                <td scope="row">{{user.username}}</td>
+                <td scope="row">{{user.email}}</td>
+                <td scope="row">{{user.gender}}</td>
+                <td scope="row">{{user.role.name}}</td>
+                <td><button @click="redirect(user.id)">EDIT</button></td>
+              </tr>
+            </tbody>
+          </table>
+      </div>
+      <!-- No result -->
+      <div v-else class="no-result apollo">
+        <b-skeleton-table
+                :rows="7"
+                :columns="10"
+                :table-props="{ bordered: true, striped: true }"
+              ></b-skeleton-table>
+          </div>
     </template>
-    </b-table> -->
+  </ApolloQuery>
+</template>
 
-<table class="table" id="my-table">
-  <thead>
-    <tr>
-     
-      <th scope="col">Nama User</th>
-      <th scope="col">Email</th>
-      <th scope="col">Jenis Kelamin</th>
-      <th scope="col">Role</th>
-      <th scope="col">Action</th>
-    </tr>
-  </thead>
-  <tbody v-if="searchItem">
-    <tr v-for="(user) in searchItem" :key="user.id" id="my-table">
-      <td scope="row">{{user.username}}</td>
-      <td scope="row">{{user.email}}</td>
-      <td scope="row">{{user.gender}}</td>
-      <td scope="row">{{user.role.name}}</td>
-      <td><button @click="redirect(user.id)">EDIT</button></td>
-    </tr>
-  </tbody>
-  <tbody v-if="totalRows == 0" class="d-block text-center justify-content-center my-2">
-      <p class="center">Loading...</p>
-  </tbody>
-</table>
     </div>
     <div class="d-flex my-2 ">
 <p class="mx-4">Page {{currentPage}} of {{totalPage}}</p>    
@@ -81,19 +88,19 @@
 </template>
 
 <script>
-import axios from 'axios'
+//import axios from 'axios'
 
 export default {
     name: "manageUser",
     data(){
       return{
-        fields: [
-                { key: 'username', label: 'Nama User', thStyle: {background: '#DDDDDD', color: 'black'} },
-                { key: 'email', label: 'Email', thStyle: {background: '#DDDDDD', color: 'black'} }, 
-                { key: 'gender', label: 'Jenis Kelamin', thStyle: {background: '#DDDDDD', color: 'black'} },
-                { key: 'role', label: 'Role', thStyle: {background: '#DDDDDD', color: 'black'} },
-                { key: 'id', label: 'Action', thStyle: {background: '#DDDDDD', color: 'black'} },                
-                ],
+        // fields: [
+        //         { key: 'username', label: 'Nama User', thStyle: {background: '#DDDDDD', color: 'black'} },
+        //         { key: 'email', label: 'Email', thStyle: {background: '#DDDDDD', color: 'black'} }, 
+        //         { key: 'gender', label: 'Jenis Kelamin', thStyle: {background: '#DDDDDD', color: 'black'} },
+        //         { key: 'role', label: 'Role', thStyle: {background: '#DDDDDD', color: 'black'} },
+        //         { key: 'id', label: 'Action', thStyle: {background: '#DDDDDD', color: 'black'} },                
+        //         ],
         items: [],
         perPage: 10,
         currentPage: 1,
@@ -135,23 +142,20 @@ export default {
   //return slice
     },
     methods: {
+      redirect(id) {
+              this.$router.push('userdata/' + id);
+              console.log(id)
 
-      
-       redirect(id) {
-        const index = id
-        this.$router.push('/userdata/' + index);
-        console.log(id)
-
-        }
+              }
     },
   async mounted() {
-            try {
-    const response1 = await axios.get('user');
-   this.items = response1.data.user;
-    console.log(response1.data.user)
-  } catch(e) {
-    console.log(e);
-  }
+  //           try {
+  //   const response1 = await axios.get('user');
+  //  this.items = response1.data.user;
+  //   console.log(response1.data.user)
+  // } catch(e) {
+  //   console.log(e);
+  // }
   const message = this.$localStorage.get('messageUser')
     if(message){
                 this.message = message

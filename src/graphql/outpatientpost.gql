@@ -1,0 +1,15 @@
+mutation outpatientpost ($patient_code: String, $datecheck: date, $complaint: String, $medic_session: Int, $doctor_id: Int, $nurse_id: Int) {
+  insert_medic_record_one(object: {patient_code: $patient_code, datecheck: $datecheck, complaint: $complaint, medic_session: $medic_session, doctor_id: $doctor_id, nurse_id: $nurse_id}) {
+    id
+    patient_code
+    height
+    weight
+    bloodtemprature
+    complaint
+    datecheck
+    diagnose
+    doctor_id
+    nurse_id
+    medic_session
+  }
+}

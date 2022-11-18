@@ -1,15 +1,12 @@
 <template>
 <div class="row">
-<navbar-vue></navbar-vue>
-<div class="col-3 sidebarungu">    
-<navdraw-vue></navdraw-vue>
-</div>
-<div class="col-9 p-0">
-    <slot></slot>
-</div>
-<div class="d-flex">
-</div>
-
+    <navbar-vue></navbar-vue>
+        <div class="col-3 sidebarungu">    
+            <navdraw-vue></navdraw-vue>
+        </div>
+        <div class="col-9 p-0">
+            <slot></slot>
+        </div>
 </div>
 </template>
 

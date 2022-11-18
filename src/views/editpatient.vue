@@ -1,85 +1,84 @@
 <template>
-<div class="card-container">
+  <div class="card-container">
     <div class="card-head">
-<img class="img1" src="../assets/Icon/add patient data.svg">
-       
-          EDIT PATIENT DATA FORM
+      <img class="img1" src="../assets/list.svg"> 
+           FORM EDIT PASIEN
     </div>
-
+    <form>
     <div class="card-body">
-<form @submit.prevent="submitData">
-  <div class="row mb-3">
-    <label for="inputEmail3" class="col-sm-2 col-form-label">Nama Pasien</label>
-    <div class="col-sm-10">
-      <input type="name" v-model="items.full_name" class="form-control" id="inputEmail3">
-           <div v-if="toggleLength" class="d-flex my-1 toggle text-danger">
-            <b-icon icon="info-circle" class="mx-2"></b-icon>{{error.full_name}}
-                      </div>
-
+      <div class="row mb-3">
+        <label for="inputName3" class="col-sm-2 col-form-label">Nama Pasien</label>
+          <div class="col-sm-10">
+            <input type="name" v-model="patient.full_name" class="form-control" id="inputName3">
+              <div v-if="toggleLength" class="d-flex my-1 toggle text-danger">
+                <b-icon icon="info-circle" class="mx-2"></b-icon>{{error.full_name}}
+              </div>
+          </div>
+      </div>
+      <div class="row mb-3">
+        <label for="inputName3" class="col-sm-2 col-form-label">Alamat</label>
+          <div class="col-sm-10">
+            <input type="name" v-model="patient.address" class="form-control" id="inputName3">
+              <div v-if="toggleLength" class="d-flex my-1 toggle text-danger">
+                <b-icon icon="info-circle" class="mx-2"></b-icon>{{error.full_name}}
+              </div>
+          </div>
+      </div>
+      <div class="row mb-3">
+        <label for="inputName3" class="col-sm-2 col-form-label">Tanggal Lahir</label>
+          <div class="col-sm-10">
+            <input type="name" v-model="patient.birthdate" class="form-control" id="inputName3">
+              <div v-if="toggleLength" class="d-flex my-1 toggle text-danger">
+                <b-icon icon="info-circle" class="mx-2"></b-icon>{{error.full_name}}
+              </div>
+          </div>
+      </div>
+      <div class="row mb-3">
+        <label for="inputName3" class="col-sm-2 col-form-label">Golongan Darah</label>
+          <div class="col-sm-10">
+            <input type="name" v-model="patient.bloodtype" class="form-control" id="inputName3">
+              <div v-if="toggleLength" class="d-flex my-1 toggle text-danger">
+                <b-icon icon="info-circle" class="mx-2"></b-icon>{{error.full_name}}
+              </div>
+          </div>
+      </div>
+      <div class="row mb-3">
+        <label for="inputName3" class="col-sm-2 col-form-label">Jenis Kelamin</label>
+          <div class="col-sm-10">
+            <input type="name" v-model="patient.gender" class="form-control" id="inputName3">
+              <div v-if="toggleLength" class="d-flex my-1 toggle text-danger">
+                <b-icon icon="info-circle" class="mx-2"></b-icon>{{error.full_name}}
+              </div>
+          </div>
+      </div>
+      <div class="row mb-3">
+        <label for="inputName3" class="col-sm-2 col-form-label">NIK</label>
+          <div class="col-sm-10">
+            <input type="name" v-model="patient.national_id" class="form-control" id="inputName3">
+              <div v-if="toggleLength" class="d-flex my-1 toggle text-danger">
+                <b-icon icon="info-circle" class="mx-2"></b-icon>{{error.full_name}}
+              </div>
+          </div>
+      </div>
+      <div class="row mb-3">
+        <label for="inputName3" class="col-sm-2 col-form-label">Kode Pasien</label>
+          <div class="col-sm-10">
+            <input type="name" v-model="patient.patient_code" class="form-control" id="inputName3">
+              <div v-if="toggleLength" class="d-flex my-1 toggle text-danger">
+                <b-icon icon="info-circle" class="mx-2"></b-icon>{{error.full_name}}
+              </div>
+          </div>
+      </div>
+      <div class="d-flex gap-2 d-md-flex justify-content-md-end">
+        <button class="btn btn-primary me-md-2" type="submit" @click="submit">UPDATE</button>
+      </div>
     </div>
+  </form>
   </div>
-  <div class="row mb-3">
-    <label for="inputNik3" class="col-sm-2 col-form-label">NIK</label>
-    <div class="col-sm-10">
-      <input type="nik" v-model="items.national_id" class="form-control" id="inputNik3">
-           <div v-if="toggleLength" class="d-flex my-1 toggle text-danger">
-            <b-icon icon="info-circle" class="mx-2"></b-icon>{{error.national_id}}
-                      </div>
-
-    </div>
-  </div>
-  <div class="row mb-3">
-    <label for="inputAlamat3" class="col-sm-2 col-form-label">Alamat</label>
-    <div class="col-sm-10">
-      <input type="alamat" v-model="items.address" class="form-control" id="inputAlamat3">
-     <div v-if="toggleLength" class="d-flex my-1 toggle text-danger">
-            <b-icon icon="info-circle" class="mx-2"></b-icon>{{error.address}}
-                      </div>
-
-    </div>
-  </div>
-  <div class="row mb-3">
-    <label for="inputGender3" class="col-sm-2 col-form-label">Jenis Kelamin</label>
-    <div class="col-sm-10">
-      <input type="gender" v-model="items.gender" class="form-control" id="inputGender3">
-           <div v-if="toggleLength" class="d-flex my-1 toggle text-danger">
-            <b-icon icon="info-circle" class="mx-2"></b-icon>{{error.gender}}
-                      </div>
-
-    </div>
-  </div>
-  <div class="row mb-3">
-    <label for="inputDate3" class="col-sm-2 col-form-label">Tanggal Lahir</label>
-    <div class="col-sm-10">
-      <input type="date" v-model="items.birthdate" class="form-control" id="inputDate3">
-      <div v-if="toggleLength" class="d-flex my-1 toggle text-danger">
-            <b-icon icon="info-circle" class="mx-2"></b-icon>{{error.birthdate}}
-                      </div>
-    </div>
-     
-  </div>
-  <div class="row mb-3">
-    <label for="inputBlood3" class="col-sm-2 col-form-label">Golongan Darah</label>
-    <div class="col-sm-10">
-      <input type="blood" v-model="items.blood_type" class="form-control" id="inputBlood3">
-           <div v-if="toggleLength" class="d-flex my-1 toggle text-danger">
-            <b-icon icon="info-circle" class="mx-2"></b-icon>{{error.blood_type}}
-                      </div>
-
-    </div>
-  </div>
-<br><br>
-  <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-   <button class="btn btn-primary me-md-2" type="submit">UPDATE</button>
-  
-</div>
-</form>
-    </div>
-</div>
 </template>
 
 <script>
-import axios from 'axios';
+import gql from 'graphql-tag';
 
 export default {
     name: "editPatient",
@@ -87,54 +86,96 @@ export default {
       return{
         items: [],
         toggleLength: false,
-        error: []
+        error: [],
+        national_id: '',
+        full_name: '',
+        gender: '',
+        address: '',
+        birthdate: '',
+        blood_type: ''
       }
     },
     computed: {
       index () {
         const id = this.$route.params.id  
        return id
-   },
+      },
     },
+    apollo: { 
+      patient: {
+          query: gql`
+           query MyQuery ($id: Int!){
+              patient_by_pk(id: $id) {
+                id
+                full_name
+                address
+                birthdate
+                bloodtype
+                gender
+                medic_record
+                medic_session
+                medic_staff
+                national_id
+                patient_code
+              }
+            }
+
+          `,
+          
+          variables () {
+              return {
+                  id: this.index,
+              }
+            },
+          update: (data) => {
+            console.log(data.patient_by_pk)
+            return data.patient_by_pk;
+          },
+      },
+ },
     methods: {
-     async submitData(){
-      const data = {
-        national_id: this.items.national_id,
-        full_name: this.items.full_name,
-        gender: this.items.gender,
-        address: this.items.address,
-        birthdate: this.items.birthdate,
-        blood_type: this.items.blood_type
-      }
-  
-    await axios.put(`patient/${this.index}/update`, data)
-      .then(response => {
-        console.log(response)
-        const messageTrue = response.data.message
-        this.$localStorage.set('messagePatient', messageTrue)
-        this.$router.push({name: 'patientData'})
-      })
-      .catch(error => {
-        console.log(error.response.data.error)
-        const errorinput = error.response.data.error
-        if(error){
-              this.error = errorinput
-              this.toggleLength = true
+     submit(e){
+      e.preventDefault();
+      // const data = {
+      //   national_id: this.patient.national_id,
+      //   full_name: this.patient.full_name,
+      //   gender: this.patient.gender,
+      //   address: this.patient.address,
+      //   birthdate: this.patient.birthdate,
+      //   blood_type: this.patient.bloodtype,
+      //   patient_code: this.patient.patient_code,
+      // }
+      // console.log(data)
+      this.$apollo.mutate({
+        mutation: gql`
+        mutation updatePatient ($id: Int!, $full_name: String, $gender: String, $bloodtype: String, $birthdate: date, $address: String, $national_id: numeric, $patient_code: String){
+            update_patient_by_pk(pk_columns: {id: $id}, _set: {full_name: $full_name, gender: $gender, bloodtype: $bloodtype, birthdate: $birthdate, address: $address, national_id: $national_id, patient_code: $patient_code}) {
+              id
+              full_name
+              patient_code
+            }
+          }
+        `,
+        variables: {
+            id: this.index,
+            national_id: this.patient.national_id,
+            full_name: this.patient.full_name,
+            gender: this.patient.gender,
+            address: this.patient.address,
+            birthdate: this.patient.birthdate,
+            bloodtype: this.patient.bloodtype,
+            patient_code: this.patient.patient_code,
         }
-        
-      })
+      });
+              this.$router.push('/patientdata')
+              const message = 'Data Telah Berhasil Diubah'
+              this.$localStorage.set('patient', message)
+              console.log(message)
       }
     },
-    async mounted(){
-         try {
-    const response1 = await axios.get(`patient/${this.index}`);
-   this.items = response1.data.data;
-    console.log(response1.data)
-  } catch(e) {
-    console.log(e);
-  }
+   
 }
-}
+
 </script>
 
 <style scoped>

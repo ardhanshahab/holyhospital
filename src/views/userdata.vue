@@ -7,11 +7,26 @@
     </div>
 
     <div class="card-body">
-<form @submit.prevent="submitData">
+
+      <template>
+  <ApolloQuery
+    :query="require('../graphql/getuserbypk.gql')"
+    :variables="{ index }"
+  >
+    <template v-slot="{ result: { loading, error, data } }">
+      <!-- Loading -->
+      <div v-if="loading" class="loading apollo">Loading...</div>
+
+      <!-- Error -->
+      <div v-else-if="error" class="error apollo">An error occurred</div>
+
+      <!-- Result -->
+      <div v-else-if="data" class="result apollo">
+        <form @submit.prevent="submitData">
   <div class="row mb-3">
     <label for="inputName3" class="col-sm-2 col-form-label">Nama User</label>
     <div class="col-sm-10">
-      <input type="name" v-model="newsData.full_name" class="form-control" id="inputName3">
+      <input type="name" v-model="data.user_by_pk.username" class="form-control" id="inputName3">
       <div v-if="toggleLength" class="d-flex my-1 toggle text-danger">
             <b-icon icon="info-circle" class="mx-2"></b-icon>{{error.full_name}}
                       </div>
@@ -21,7 +36,7 @@
   <div class="row mb-3">
     <label for="inputEmail3" class="col-sm-2 col-form-label">Email</label>
     <div class="col-sm-10">
-      <input type="email" v-model="newsData.email" class="form-control" id="inputEmail3">
+      <input type="email" v-model="data.user_by_pk.email" class="form-control" id="inputEmail3">
       <div v-if="toggleLength" class="d-flex my-1 toggle text-danger">
             <b-icon icon="info-circle" class="mx-2"></b-icon>{{error.email}}
                       </div>
@@ -32,7 +47,7 @@
   <div class="row mb-3">
     <label for="inputGender3" class="col-sm-2 col-form-label">Jenis Kelamin</label>
     <div class="col-sm-10">
-      <input type="gender" v-model="newsData.gender" class="form-control" id="inputGender3">
+      <input type="gender" v-model="data.user_by_pk.gender" class="form-control" id="inputGender3">
       <div v-if="toggleLength" class="d-flex my-1 toggle text-danger">
             <b-icon icon="info-circle" class="mx-2"></b-icon>{{error.gender}}
                       </div>
@@ -42,7 +57,7 @@
   <div class="row mb-3">
     <label for="inputRole3" class="col-sm-2 col-form-label">Role</label>
     <div class="col-sm-10">
-     <select class="form-select" v-model="newsData.role_id" aria-label="Default select example">
+     <select class="form-select" v-model="data.user_by_pk.role.id" aria-label="Default select example">
   <option selected>Pilih Role</option>
   <option value="2">Dokter</option>
   <option value="3">Perawat</option>
@@ -59,7 +74,7 @@
   <div class="row">
     <label for="inputFacility3" class="col-sm-2 col-form-label">Fasilitas</label>
     <div class="col-sm-10">
-      <select class="form-select" v-model="newsData.facility_id">
+      <select class="form-select" v-model="data.user_by_pk.facility_id">
   <option selected>Pilih Fasilitas</option>
   <option value="1">Umum</option>
   <option value="2">Anak</option>
@@ -77,6 +92,51 @@
   
 </div>
 </form>
+      </div>
+
+      <!-- No result -->
+      <div v-else class="no-result apollo">
+        <div class="row mb-3">
+          <label for="inputBlood3" class="col-sm-2 col-form-label"></label>
+        <div class="col-sm-10">
+        <b-skeleton type="input"></b-skeleton>
+        </div>
+      </div>
+      <div class="row mb-3">
+          <label for="inputBlood3" class="col-sm-2 col-form-label"></label>
+        <div class="col-sm-10">
+        <b-skeleton type="input"></b-skeleton>
+        </div>
+      </div>
+      <div class="row mb-3">
+          <label for="inputBlood3" class="col-sm-2 col-form-label"></label>
+        <div class="col-sm-10">
+        <b-skeleton type="input"></b-skeleton>
+        </div>
+      </div>
+      <div class="row mb-3">
+          <label for="inputBlood3" class="col-sm-2 col-form-label"></label>
+        <div class="col-sm-10">
+        <b-skeleton type="input"></b-skeleton>
+        </div>
+      </div>
+      <div class="row mb-3">
+          <label for="inputBlood3" class="col-sm-2 col-form-label"></label>
+        <div class="col-sm-10">
+        <b-skeleton type="input"></b-skeleton>
+        </div>
+      </div>
+      <div class="row mb-3">
+          <label for="inputBlood3" class="col-sm-2 col-form-label"></label>
+        <div class="col-sm-10">
+        <b-skeleton type="input"></b-skeleton>
+        </div>
+      </div>
+      
+      </div>
+    </template>
+  </ApolloQuery>
+</template>
     </div>
 </div>
 </template>

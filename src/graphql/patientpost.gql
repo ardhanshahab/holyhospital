@@ -1,0 +1,12 @@
+mutation patientpost ($address: String!, $birthdate: date, $bloodtype: String!, $full_name: String!, $gender: String!, $national_id: numeric, $patient_code: String!) {
+  insert_patient_one(object: {address: $address, birthdate: $birthdate, bloodtype: $bloodtype, full_name: $full_name, gender: $gender, national_id: $national_id, patient_code: $patient_code}) {
+    address
+    birthdate
+    bloodtype
+    full_name
+    gender
+    id
+    national_id
+    patient_code
+  }
+}

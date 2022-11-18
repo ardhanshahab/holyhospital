@@ -1,0 +1,12 @@
+query patientdata {
+  patient {
+    id
+    full_name
+    gender
+    bloodtype
+    address
+    birthdate
+    patient_code
+    national_id
+  }
+}

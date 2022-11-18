@@ -1,0 +1,19 @@
+query outpatientreport {
+  patient {
+    patient_code
+    full_name
+    medic_records {
+      facility_id
+      datecheck
+      complaint
+      diagnose
+      drug
+      medic_facility {
+        name
+      }
+      medicalStaffByMedicalStaff {
+        name
+      }
+    }
+  }
+}

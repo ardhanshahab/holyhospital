@@ -1,0 +1,15 @@
+query patient_by_pk ($index: Int!){
+patient(where: {id: {_eq: $index}}) {
+    id
+    full_name
+    patient_code
+    national_id
+    bloodtype
+    birthdate
+    address
+    gender
+    medic_staff
+    medic_session
+    medic_record
+  }
+}

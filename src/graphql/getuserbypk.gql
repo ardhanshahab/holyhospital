@@ -1,0 +1,19 @@
+query MyQuery ($index: Int!){
+  user_by_pk(id: $index) {
+    id
+    email
+    password
+    username
+    gender
+    role_id
+    role {
+      id
+      name
+    }
+    facility_id
+    medic_facility {
+      id
+      name
+    }
+  }
+}

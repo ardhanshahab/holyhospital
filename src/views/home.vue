@@ -1,5 +1,14 @@
 <template>
 <div class="">
+  <b-overlay
+          id="overlay-background"
+          :show="show"
+          :variant="variant"
+          :opacity="opacity"
+          :blur="blur"
+          :rounded="rounded"
+          :isLoading="isLoading"
+        >
     <div class="hero ungusecondary">
         <div class="imageprofile">
           <h3>Selamat Datang, Admin</h3>
@@ -63,8 +72,9 @@
         </a>
         <b-card-text>Logout</b-card-text>
       </b-card>
-                </div>
-            </div>
+          </div>
+      </div>
+    </b-overlay>
 </div>
 </template>
 
@@ -75,7 +85,11 @@ export default {
     data(){
       return{
         nama: null,
-        roles: null
+        roles: null,
+        isLoading: true,
+        show: true,
+        rounded: 'lg'
+    
       }
     },
     methods: {
@@ -86,7 +100,11 @@ export default {
               },
 
     },  mounted(){
-    const tokenlocal = this.$localStorage.get('nama')
+      setTimeout(() =>  {
+      this.isLoading = false;
+      this.show = false;
+      }, 1000);
+      const tokenlocal = this.$localStorage.get('nama')
     const tokenroles = this.$localStorage.get('roles')
   if (tokenlocal){
     console.log(tokenlocal)

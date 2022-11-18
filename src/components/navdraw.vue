@@ -11,15 +11,15 @@
                     <a class="d-flex justify-content-between align-items-center border-bottom list-group-item ungusecondary text-white p-3" @click="toggleoutpatient = !toggleoutpatient" @dblclick="togel()"><div><img src="../assets/Icon/outpatientsidebar.svg" width="50" class="svgmx"/>Outpatient</div> <img src="../assets/Icon/drop down.svg" width="30" class="iconmx"/></a>        
 <!-- toggle -->                   
                         <div class="sub-menu" v-if="toggleoutpatient">
-                            <a class="list-group-item  ungusecondary border-bottom text-white p-3" href="/addoutpatient">Add Outpatient</a>
+                            <a class="list-group-item ungusecondary border-bottom text-white p-3" href="/addoutpatient">Add Outpatient</a>
                             <a class="list-group-item ungusecondary border-bottom text-white p-3" href="/outpatientreport">Outpatient Report</a>
-                            <a class="list-group-item ungusecondary border-bottom text-white p-3" href="/outpatientlist">Outpatient List</a>
+                            <!-- <a class="list-group-item ungusecondary border-bottom text-white p-3" href="/outpatientlist">Outpatient List</a> -->
                         </div>
 <!-- ENDtoggle -->
                     <a class="d-flex justify-content-between align-items-center border-bottom list-group-item ungusecondary text-white p-3" @click="toggleschedule = !toggleschedule" @dblclick="togel()"><div><img src="../assets/Icon/schedulesidebar.svg" width="50" class="svgmx"/>Schedule</div> <img src="../assets/Icon/drop down.svg" width="30" class="iconmx"/></a>        
 <!-- toggle -->                   
                         <div class="sub-menu" v-if="toggleschedule">
-                            <a class="list-group-item ungusecondary border-bottom text-white p-3" href="/addschedule">Add Schedule</a>
+                            <a class="list-group-item ungusecondary border-bottom text-white p-3" href="/adddoctorschedule">Add Schedule</a>
                             <a class="list-group-item ungusecondary border-bottom text-white p-3" href="/schedulelist">Schedule List</a>
                         </div>
 <!-- ENDtoggle -->

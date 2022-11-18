@@ -2,12 +2,17 @@
     <div class="container">
         <div class="d-flex">
               <img src="../assets/Icon/outpatient data form.svg" width="40px"/>
-
-            <h3 class="mt-1 m-1">OUTPATIENT DATA FORM</h3>
+            <h3 class="mt-1 m-1">FORM PASIEN RAWAT JALAN</h3>
         </div>
         <div class="d-block cardinput">
+          <ApolloMutation
+          :mutation="require('../graphql/outpatientpost.gql')"
+          :variables="{ patient_code, datecheck, complaint, medic_session, doctor_id, nurse_id }"
+          @done="onDone()"
+          >
+          <template v-slot="{mutate, loading, error}">
         <b-card bg-variant="light" class="card text-center mx-2 my-2 text-purple">
-          <b-form @submit="onSubmit">
+          <!-- <b-form @submit="onSubmit"> -->
           <b-row class="my-3">  
             <b-col cols="2" class="d-flex justify-content-start">
               <label class="mt-2" aria-controls="fieldset-1">Kode Pasien</label>
@@ -16,25 +21,20 @@
               <b-form-group
                 id="fieldset-1"
               >
-          <b-form-input id="input-1" v-model="patient_code" trim class="hdrop" placeholder="RM"></b-form-input>
+              <b-form-select v-model="patient_code" class="hdrop w100">
+                    <option :value="null" disabled>-- Please select an option --</option>
+                    <option v-for="kode in kode_pasien" :key="kode.id" :value="kode.patient_code">
+                      {{ kode.patient_code }} {{kode.full_name}}
+                    </option>
+                  </b-form-select>
           <div v-if="toggleLength" class="d-flex mx-2 toggle text-danger">
             <b-icon icon="info-circle" class="mx-2"></b-icon>{{error.patient_code}}
           </div>
         </b-form-group>
               </b-col>
-          </b-row>
-
-          <b-row class="my-3">
-            <b-col cols="2" class="d-flex justify-content-start">
-              <label class="mt-2" aria-controls="fieldset-2">Nama Pasien</label>
-            </b-col>
-              <b-col cols="10">
-              <b-form-group
-                id="fieldset-2"
-              >
-          <b-form-input id="input-2" v-model="patient_name" trim class="hdrop"></b-form-input>
-          </b-form-group>
-              </b-col>
+              <!-- <b-col cols="1">
+                <b-button class="unguprimary" style=" margin-top: 5px;" @click="btncodes()">CEK</b-button>
+              </b-col> -->
           </b-row>
 
         <b-row class="my-3">
@@ -42,7 +42,7 @@
               <label class="mt-2" aria-controls="fieldset-5">Tanggal Kontrol</label>
             </b-col>
               <b-col cols="10">
-           <b-form-datepicker id="example-datepicker" v-model="date_check" class="mb-2 hdrop"></b-form-datepicker>
+           <b-form-datepicker id="example-datepicker" v-model="datecheck" class="mb-2 hdrop"></b-form-datepicker>
           <div v-if="toggleLength" class="d-flex mx-2 toggle text-danger">
             <b-icon icon="info-circle" class="mx-2"></b-icon>{{error.date_check}}
           </div>
@@ -60,26 +60,7 @@
           <div v-if="toggleLength" class="d-flex mx-2 toggle text-danger">
             <b-icon icon="info-circle" class="mx-2"></b-icon><p>{{error.complaint}}</p>
           </div>
-
         </b-form-group>
-              </b-col>
-          </b-row>
-
-          <b-row class="my-3">
-            <b-col cols="2" class="d-flex justify-content-start">
-              <label class="mt-2" aria-controls="fieldset-6">Jenis Poli</label>
-            </b-col>
-              <b-col cols="10">
-                <b-form-select
-                          id="input-6"
-                          v-model="facility"
-                          :options="poli"
-                          required
-                           class="hdrop w100"
-                        ></b-form-select>
-            <div v-if="toggleLength" class="d-flex mx-2 toggle text-danger">
-                  <b-icon icon="info-circle" class="mx-2"></b-icon>{{error.facility_id}}
-          </div>
               </b-col>
           </b-row>
 
@@ -88,13 +69,12 @@
               <label class="mt-2" aria-controls="fieldset-6">Jadwal Sesi</label>
             </b-col>
               <b-col cols="10">
-                <b-form-select
-                          id="input-6"
-                          v-model="jadwal_sesi"
-                          :options="sesi"
-                          required
-                           class="hdrop w100"
-                        ></b-form-select>
+                <b-form-select v-model="medic_session" class="hdrop w100">
+                    <option :value="null" disabled>-- Please select an option --</option>
+                    <option v-for="session in sesi" :key="session.id" :value="session.id">
+                      {{ session.name }} {{session.time}}
+                    </option>
+                  </b-form-select>
                         <div v-if="toggleLength" class="d-flex mx-2 toggle text-danger">
             <b-icon icon="info-circle" class="mx-2"></b-icon>{{error.session_id}}
                       </div>
@@ -106,19 +86,35 @@
               <label class="mt-2" aria-controls="fieldset-6">Nama Dokter</label>
             </b-col>
               <b-col cols="10">
-                <b-form-select
-                          id="input-6"
-                          v-model="doctor"
-                          :options="dokter"
-                          required
-                           class="hdrop w100"
-                        >
-                        </b-form-select>
+                <b-form-select v-model="doctor_id" class="hdrop w100">
+                    <option :value="null" disabled>-- Please select an option --</option>
+                    <option v-for="doctor in dokter" :key="doctor.id" :value="doctor.id">
+                      {{ doctor.name }}
+                    </option>
+                  </b-form-select>
                         <div v-if="toggleLength" class="d-flex mx-2 toggle text-danger">
             <b-icon icon="info-circle" class="mx-2"></b-icon>{{error.doctor_code}}
           </div>
               </b-col>
           </b-row>
+
+          <b-row class="my-3">
+            <b-col cols="2" class="d-flex justify-content-start">
+              <label class="mt-2" aria-controls="fieldset-6">Nama Perawat</label>
+            </b-col>
+              <b-col cols="10">
+                <b-form-select v-model="nurse_id" class="hdrop w100">
+                    <option :value="null" disabled>-- Please select an option --</option>
+                    <option v-for="nurse in perawat" :key="nurse.id" :value="nurse.id">
+                      {{ nurse.name }}
+                    </option>
+                  </b-form-select>
+                        <div v-if="toggleLength" class="d-flex mx-2 toggle text-danger">
+            <b-icon icon="info-circle" class="mx-2"></b-icon>{{error.doctor_code}}
+          </div>
+              </b-col>
+          </b-row>
+
 
           <b-row class="my-3">
             <b-col cols="2" class="d-flex justify-content-start">
@@ -128,19 +124,18 @@
               <b-form-group
                 id="fieldset-4"
               >
-          <b-form-input id="input-4" v-model="queue" trim class="hdrop"></b-form-input>
+          <b-form-input id="input-4" v-model="queue" trim class="hdrop" disabled></b-form-input>
         </b-form-group>
         <div class="d-flex justify-content-end">
-        <b-btn class="unguprimary" @click="onSubmit()">Submit</b-btn>
+        <b-btn class="unguprimary" :disabled="loading" @click="mutate()">Submit</b-btn>
         <b-btn class="unguprimary" @click="onReset()">Reset</b-btn>
         </div>
-
               </b-col>
           </b-row>
-
-      </b-form>          
+      <!-- </b-form>           -->
         </b-card>
-
+          </template>
+          </ApolloMutation>
         </div>
         
     </div>
@@ -156,59 +151,83 @@ export default {
            },
     data() {
       return {
+        btncode: false,
         name: '',
-        patient_code: '',
+        patient_code: null,
         patient_name: '',
         complaint: '',
         queue: '',
-        date_check: '',
+        datecheck: '',
         facility: null,
-        jadwal_sesi: null,
-        doctor: null,
+        medic_session: null,
+        doctor_id: null,
+        nurse_id: null,
         toggleLength : false,
         error: [],
-
-      poli: [{ text: 'Pilih Poli', value: null }, {text:'Umum', value: 1 }, {text:'Anak', value: 2 }, {text:'Gigi', value: 3 }],
-      sesi: [{ text: 'Pilih Sesi', value: null }, {text:'Pagi (08.00 - 11.00)', value: 1}, {text:'Siang (13.00 - 15.00)', value: 2 }, {text:'Sore (16.00 - 18.00)', value: 3 }],
-      dokter: [{ text: 'Pilih Dokter', value: null }, {text:'dr. Alshad Ahmad', value: 'DCR00001' }, {text:'dr. Adira Putri', value: 'DCR00002' }, {text:'dr. Shelley Herman', value: 'DCR00003' }, {text:'dr. Christie', value: 'DCR00004'}],
-      kode_pasien: [],
+        sesi: [],
+        dokter: [],
+        perawat: [],
+        kode_pasien: [],
 }
     },
     methods: {
-     async onSubmit() {
-          const data = {
-            patient_code: this.patient_code,
+      btncodes(){
+        if(this.btncode == false){
+          this.btncode = true
+        }else{
+          this.btncode = false
+        }
+      },
+     async onDone() {
+      const data = {
+            patient_code: this.patient,
             complaint: this.complaint,
             date_check: this.date_check,
-            facility_id: this.facility,
+            nurse_id: this.nurse_id,
             session_id: this.jadwal_sesi,
-            doctor_code: this.doctor
+            doctor_id: this.doctor_id,
+            queue: this.queue,
           }
-          const token = this.$localStorage.get('token')
-        console.log(token)
-        await axios.post('outpatient',data, {
-        headers: { "Authorization" : 'Bearer ' + token
-        }
-      })
-      .then(response => {
-        console.log(response)
-        const messageTrue = response.data.message
-        this.$localStorage.set('messageOutpatient', messageTrue)
-        this.$router.push('outpatientlist')
-      })
-      .catch(error => {
-        console.log(error.response.data.error)
-        const errorinput = error.response.data.error
-        if(error){
-              this.error = errorinput
-              this.toggleLength = true
-        }
+          console.log(data)
+          this.$router.push('/outpatientreport')
+              const message = 'Data Telah Tersimpan'
+              this.$localStorage.set('outpatient', message)
+              console.log(message)
+      
+    },
+    //       const data = {
+    //         patient_code: this.patient_code,
+    //         complaint: this.complaint,
+    //         date_check: this.date_check,
+    //         facility_id: this.facility,
+    //         session_id: this.jadwal_sesi,
+    //         doctor_code: this.doctor
+    //       }
+    //       const token = this.$localStorage.get('token')
+    //     console.log(token)
+    //     await axios.post('outpatient',data, {
+    //     headers: { "Authorization" : 'Bearer ' + token
+    //     }
+    //   })
+    //   .then(response => {
+    //     console.log(response)
+    //     const messageTrue = response.data.message
+    //     this.$localStorage.set('messageOutpatient', messageTrue)
+    //     this.$router.push('outpatientlist')
+    //   })
+    //   .catch(error => {
+    //     console.log(error.response.data.error)
+    //     const errorinput = error.response.data.error
+    //     if(error){
+    //           this.error = errorinput
+    //           this.toggleLength = true
+    //     }
         
-      })
+    //   })
               
-      },
+    //   },
       onReset() {
-        this.toggleLength = false,
+      this.toggleLength = false,
       this.doctor = null,
       this.patient_name = '',
       this.jadwal_sesi = null,
@@ -222,17 +241,25 @@ export default {
     },
    
 
-//  async mounted(){
-//     try {
-//     const response1 = await axios.get('patient');
-//     this.kode_pasien = response1.data.data
-//     console.log(response1.data.data)
-
-//   } catch(e) {
-//     console.log(e);
-//   }
-//   console.log(this.patient_code)
-//   }
+ async mounted(){
+    try {
+    const response = await axios.get('antrian');
+    const antrian = response.data.medic_record.length
+    const dokter = response.data.doctor_table
+    const perawat = response.data.nurse_table
+    const pasien = response.data.patient
+    const session = response.data.session
+    this.kode_pasien = pasien 
+    this.perawat = perawat
+    this.dokter = dokter
+    this.queue = antrian + 1
+    this.sesi = session
+    
+    console.log(response.data.medic_session.length)
+  } catch(e) {
+    console.log(e);
+  }
+  }
 
   
 }

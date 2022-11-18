@@ -1,0 +1,25 @@
+query schedule ($value: date){
+  schedule(where: {date: {_eq: $value }}) {
+   id
+    date
+    doctor_id
+    session {
+      id
+      name
+      time
+    }
+       doctor_table {
+      id
+      name
+      facility_id
+      medic_facility {
+        id
+        name
+      }
+    }
+    nurse_table {
+      id
+      name
+    }
+  }
+}

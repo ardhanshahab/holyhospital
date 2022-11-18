@@ -10,59 +10,61 @@
     </b-alert>
     <div class="card-head">
         <img class="img1" src="../assets/Icon/add patient data.svg">
-       
-            PATIENT DATA 
-            
+            DATA PASIEN 
     </div>
+    <div class="d-flex justify-content-end my-3">          
+            <b-button class="lightdark-a text-black" @click="addpatient()">TAMBAH PASIEN <img src="../assets/Icon/sort oldest to newest.svg" width="28px"/></b-button>
+        </div>
 
- <div class="search">
-    <div class="input-group mb-3">
-  <input type="search" class="form-control" placeholder="Search Name" id="filter-input" v-model="keyword">
-  <button class="input-group-text" id="basic-addon2"><img class="img11" src="../assets/search.png"></button>
-    </div>
-</div>
-    <table class="table">
-  <thead>
-    <tr class="lightdark-a">
-      <th scope="col">Kode Pasien</th>
-      <th scope="col">Nama Pasien</th>
-      <th scope="col">Golongan Darah</th>
-      <th scope="col">NIK</th>
-      <th scope="col">Jenis Kelamin</th>
-      <th scope="col">Action</th>
-    </tr>
-  </thead>
-  <tbody v-if="totalRows > 1">
-    <tr v-for="(user) in searchItem" :key="user.id" id="my-table" class="lightdark-b ">
-      <td scope="row">{{user.patient_code}}</td>
-      <td scope="row">{{user.full_name}}</td>
-      <td scope="row">{{user.bloodtype}}</td>
-      <td scope="row">{{user.national_id}}</td>
-      <td scope="row">{{user.gender}}</td>
-      <td><button @click="redirect(user.id)" class="btn w100 btn-primary">EDIT</button></td>
-    </tr>
-  </tbody>
-  <tbody v-if="totalRows == 0" class="d-block justify-content-center w100 my-2 lightdark-b">
-      <p>Sorry, no matches were found</p>
-      <p>Try a new Search</p>
-  </tbody>
-</table>
-    <!-- <div class="bTable"> -->
-    <!-- <b-table
-      id="my-table"
-      :items="items"
-      :fields="fields"
-      :per-page="perPage"
-      :current-page="currentPage"
-      sort-desc
+<template>
+  <ApolloQuery
+    :query="require('../graphql/patientdata.gql')"
+  >
+    <template v-slot="{ result: { loading, error, data } }">
+      <!-- Loading -->
+      <div v-if="loading" class="loading apollo">Loading...</div>
 
-      class="text-center w100 lightdark-b"
-    >
-    <template #cell(id)>
-      <button @click="redirect(id)" class="btn btn-primary me-md-2" type="button">EDIT</button>
+      <!-- Error -->
+      <div v-else-if="error" class="error apollo">An error occurred</div>
+
+      <!-- Result -->
+      <div v-else-if="data" class="result apollo">
+            <table class="table">
+      <thead>
+        <tr class="lightdark-a">
+          <th scope="col">Kode Pasien</th>
+          <th scope="col">Nama Pasien</th>
+          <th scope="col">NIK</th>
+          <th scope="col">Golongan Darah</th>
+          <th scope="col">Tanggal Lahir</th>
+          <th scope="col">Jenis Kelamin</th>
+          <th scope="col">Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="user in data.patient" :key="user.id" id="my-table" class="lightdark-b ">
+          <td scope="row">{{user.patient_code}}</td>
+          <td scope="row">{{user.full_name}}</td>
+          <td scope="row">{{user.national_id}}</td>
+          <td scope="row">{{user.bloodtype}}</td>
+          <td scope="row">{{user.birthdate}}</td>
+          <td scope="row">{{user.gender}}</td>
+          <td><button @click="redirect(user.id)" class="btn w100 btn-primary">EDIT</button></td>
+        </tr>
+      </tbody>
+    </table>
+      </div>
+      <!-- No result -->
+      <div v-else class="no-result apollo">
+        <b-skeleton-table
+                :rows="5"
+                :columns="10"
+                :table-props="{ bordered: true, striped: true }"
+              ></b-skeleton-table>
+          </div>
     </template>
-    </b-table> -->
-    <!-- </div> -->
+  </ApolloQuery>
+</template>
 
 <div class="d-flex my-2 ">
 <p class="mx-4">Page {{currentPage}} of {{totalPage}}</p>    
@@ -81,18 +83,17 @@
 </template>
 
 <script>
-import axios from 'axios';
+//import axios from 'axios';
 export default {
     name: "patientData",
     computed: {
-      searchItem(){              
-        
-        const filter = this.keyword
-              ? this.items.filter(item => item.full_name.includes(this.keyword))
-              : this.listItem
-              console.log(this.listItem)
-              return filter
-      },
+      // searchItem(){              
+      //   const filter = this.keyword
+      //         ? this.items.filter(item => item.full_name.includes(this.keyword))
+      //         : this.listItem
+      //         console.log(this.listItem)
+      //         return filter
+      // },
         totalRows() {
         return this.items.length
         }, 
@@ -106,45 +107,43 @@ export default {
                     return this.items.slice(
                     (this.currentPage - 1) * this.perPage,
                     this.currentPage * this.perPage,
-  )
-        
-		}
-    },
+                      )
+                }
+           },
     data(){
       return{
-       
         items: [],
         message: '',
         showTop: false,
         perPage: 10,
         currentPage: 1,
         keyword: '',
+        
       }
     },
     methods: {
       redirect(id) {
               this.$router.push('editpatient/' + id);
               console.log(id)
-
-              }
+              },
+      addpatient() {
+          this.$router.push('/addpatient');
+        },
     },
-    async mounted(){
-         try {
-    const response1 = await axios.get('patient');
-   this.items = response1.data.patient;
-    console.log(response1.data.patient)
-  } catch(e) {
-    console.log(e);
-  }
-  const message = this.$localStorage.get('messagePatient')
-    if(message){
-                this.message = message
+    mounted() {
+      // this.$router.go(0)
+        const message = this.$localStorage.get('patient')
+       if(message){
+        // location.reload(),
+          this.message = message
                this.showTop = true
               setTimeout(() => {
             this.showTop = false;
-                  }, 2000);
-    }
-  }
+            localStorage.removeItem('patient');
+                  }, 3000);
+                  
+       }
+    },
 }
 </script>
 
@@ -174,9 +173,9 @@ background-color: #F3F3F3;
 
 }
 .card-head{
-     margin-left: 60px;
     font-size: 20px;
     margin-top: 1.5rem;
+    margin-bottom: 60px;
 }
 
 .card-body{

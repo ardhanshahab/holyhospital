@@ -1,0 +1,6 @@
+query antrian {
+  medic_record {
+    id
+    patient_code
+  }   
+}

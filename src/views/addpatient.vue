@@ -2,78 +2,102 @@
 <div class="card-container">
     <div class="card-head">
         <img class="img1" src="../assets/Icon/add patient data.svg">
-       
-            NEW PATIENT DATA FORM
-            
+             FORM PASIEN BARU
     </div>
-
+    
     <div class="card-body">
-<form @submit.prevent="inputPatient">
-  <div class="row mb-3">
-    <label for="inputEmail3" class="col-sm-2 col-form-label">Nama Pasien</label>
-    <div class="col-sm-10">
-      <input type="name" v-model="full_name" class="form-control" id="inputEmail3">
-      <div v-if="toggleLength" class="d-flex my-1 toggle text-danger">
-            <b-icon icon="info-circle" class="mx-2"></b-icon>{{error.full_name}}
-                      </div>
-    </div>
-  </div>
-  <div class="row mb-3">
-    <label for="inputNik3" class="col-sm-2 col-form-label">NIK</label>
-    <div class="col-sm-10">
-      <input type="number" v-model="national_id" class="form-control" id="inputNik3">
-      <div v-if="toggleLength" class="d-flex my-1 toggle text-danger">
-            <b-icon icon="info-circle" class="mx-2"></b-icon>{{error.national_id}}
-                      </div>
+      <ApolloMutation
+          :mutation="require('../graphql/patientpost.gql')"
+          :variables="{ full_name, national_id, address, gender, birthdate, bloodtype, patient_code}"
+          @done="onDone()"
+          >
+          <template v-slot="{mutate, loading, error}">
+          <!-- <form> -->
+            <div class="row mb-3">
+              <label for="inputEmail3" class="col-sm-2 col-form-label">Nama Pasien</label>
+                <div class="col-sm-10">
+                  <input type="name" v-model="full_name" class="form-control" id="inputEmail3">
+                    <div v-if="toggleLength" class="d-flex my-1 toggle text-danger">
+                        <b-icon icon="info-circle" class="mx-2"></b-icon>{{error.full_name}}
+                    </div>
+                </div>
+            </div>
 
-    </div>
-  </div>
-  <div class="row mb-3">
-    <label for="inputAlamat3" class="col-sm-2 col-form-label">Alamat</label>
-    <div class="col-sm-10">
-      <input type="text" v-model="address" class="form-control" id="inputAlamat3">
-      <div v-if="toggleLength" class="d-flex my-1 toggle text-danger">
-            <b-icon icon="info-circle" class="mx-2"></b-icon>{{error.address}}
-                      </div>
+            <div class="row mb-3">
+              <label for="inputNik3" class="col-sm-2 col-form-label">NIK</label>
+                <div class="col-sm-10">
+                  <input type="number" v-model="national_id" class="form-control" id="inputNik3">
+                    <div v-if="toggleLength" class="d-flex my-1 toggle text-danger">
+                        <b-icon icon="info-circle" class="mx-2"></b-icon>{{error.national_id}}
+                    </div>
+                </div>
+            </div>
 
-    </div>
-  </div>
-  <div class="row mb-3">
-    <label for="inputGender3" class="col-sm-2 col-form-label">Jenis Kelamin</label>
-    <div class="col-sm-10">
-      <input type="text" v-model="gender" class="form-control" id="inputGender3">
-      <div v-if="toggleLength" class="d-flex my-1 toggle text-danger">
-            <b-icon icon="info-circle" class="mx-2"></b-icon>{{error.gender}}
-                      </div>
+            <div class="row mb-3">
+              <label for="inputAlamat3" class="col-sm-2 col-form-label">Alamat</label>
+                <div class="col-sm-10">
+                  <input type="text" v-model="address" class="form-control" id="inputAlamat3">
+                    <div v-if="toggleLength" class="d-flex my-1 toggle text-danger">
+                        <b-icon icon="info-circle" class="mx-2"></b-icon>{{error.address}}
+                    </div>
+                </div>
+            </div>
 
-    </div>
-  </div>
-  <div class="row mb-3">
-    <label for="inputDate3" class="col-sm-2 col-form-label">Tanggal Lahir</label>
-    <div class="col-sm-10">
-      <b-datepicker v-model="birthdate" class="form-control" dropright id="example-datepicker"></b-datepicker>
-      <div v-if="toggleLength" class="d-flex my-1 toggle text-danger">
-            <b-icon icon="info-circle" class="mx-2"></b-icon>{{error.birthdate}}
-                      </div>
+            <div class="row mb-3">
+              <label for="inputGender3" class="col-sm-2 col-form-label">Jenis Kelamin</label>
+                <div class="col-sm-10">
+                  <input type="text" v-model="gender" class="form-control" id="inputGender3">
+                    <div v-if="toggleLength" class="d-flex my-1 toggle text-danger">
+                        <b-icon icon="info-circle" class="mx-2"></b-icon>{{error.gender}}
+                    </div>
+              </div>
+            </div>
 
-      </div>
-  </div>
-  <div class="row mb-3">
-    <label for="inputBlood3" class="col-sm-2 col-form-label">Golongan Darah</label>
-    <div class="col-sm-10">
-      <input type="text" v-model="blood_type" class="form-control" id="inputBlood3">
-      <div v-if="toggleLength" class="d-flex my-1 toggle text-danger">
-            <b-icon icon="info-circle" class="mx-2"></b-icon>{{error.blood_type}}
-                      </div>
+            <div class="row mb-3">
+              <label for="inputDate3" class="col-sm-2 col-form-label">Tanggal Lahir</label>
+                <div class="col-sm-10">
+                  <b-datepicker v-model="birthdate" class="form-control" dropright id="example-datepicker"></b-datepicker>
+                    <div v-if="toggleLength" class="d-flex my-1 toggle text-danger">
+                      <b-icon icon="info-circle" class="mx-2"></b-icon>{{error.birthdate}}
+                    </div>
+                </div>
+            </div>
 
-    </div>
-  </div>
-<br><br>
-  <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-   <button type="submit" class="btn btn-primary me-md-2" >SUBMIT</button>
-  <button class="btn btn-primary" type="reset">RESET</button>
-</div>
-</form>
+            <div class="row mb-3">
+              <label for="inputBlood3" class="col-sm-2 col-form-label">Golongan Darah</label>
+                <div class="col-sm-10">
+                  <input type="text" v-model="bloodtype" class="form-control" id="inputBlood3">
+                    <div v-if="toggleLength" class="d-flex my-1 toggle text-danger">
+                      <b-icon icon="info-circle" class="mx-2"></b-icon>{{error.blood_type}}
+                    </div>
+              </div>
+            </div>
+
+            <div class="row mb-3">
+              <label for="inputkode3" class="col-sm-2 col-form-label">Kode Pasien</label>
+                <div class="col-sm-10">
+                    Kode Pasien yang tersedia : RJ0100{{kodepasien}}
+                  <input type="text" hint="RJ" v-model="patient_code" class="form-control" id="inputkode3">
+                    <div v-if="toggleLength" class="d-flex my-1 toggle text-danger">
+                      <b-icon icon="info-circle" class="mx-2"></b-icon>{{error.blood_type}}
+                    </div>
+              </div>
+            </div>
+
+          <br><br>
+            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+              <button class="btn btn-primary me-md-2" :disabled="loading" @click="mutate()">SUBMIT</button>
+                <button class="btn btn-primary" type="reset">RESET</button>
+            </div>
+          <!-- </form> -->
+          <div v-if="mutate">
+            
+          </div>
+          <div v-if="error">
+            {{error}}
+          </div>
+          </template>
+          </ApolloMutation>
     </div>
 </div>
 </template>
@@ -89,44 +113,70 @@ export default {
         gender: '',
         address: '',
         birthdate: '',
-        blood_type: '',
+        bloodtype: '',
+        patient_code: '',
+        kodepasien: '',
         toggleLength: false,
         error: [],
       }
     },
     methods: {
-    async  inputPatient(){
-        const data = {
-          national_id: this.national_id,
-          full_name: this.full_name,
-          gender: this.gender,
-          address: this.address,
-          birthdate: this.birthdate,
-          blood_type: this.blood_type
-        }
-        console.log(this.birthdate)
-        const token = this.$localStorage.get('token')
-        console.log(token)
-        await axios.post('patient',data, {
-        headers: { "Authorization" : 'Bearer ' + token
-        }
-      })
-      .then(response => {
-        console.log(response)
-        const messageTrue = response.data.message
-        this.$localStorage.set('messagePatient', messageTrue)
-        this.$router.push('patientdata')
-      })
-      .catch(error => {
-        console.log(error.response.data.error)
-        const errorinput = error.response.data.error
-        if(error){
-              this.error = errorinput
-              this.toggleLength = true
-        }
-      })
-      }
+      onDone() {
+              console.log(this.national_id)
+              console.log(this.full_name)
+              console.log(this.gender)
+              console.log(this.address)
+              console.log(this.birthdate)
+              console.log(this.bloodtype)
+              console.log(this.patient_code)
+              console.log(this.kodepasien)
+              this.$router.push('/patientdata')
+              const message = 'Data Telah Tersimpan'
+              this.$localStorage.set('patient', message)
+              console.log(message)
+          }
+    // async  inputPatient(){
+    //     const data = {
+    //       national_id: this.national_id,
+    //       full_name: this.full_name,
+    //       gender: this.gender,
+    //       address: this.address,
+    //       birthdate: this.birthdate,
+    //       blood_type: this.blood_type
+    //     }
+    //     console.log(this.birthdate)
+    //     const token = this.$localStorage.get('token')
+    //     console.log(token)
+    //     await axios.post('patient',data, {
+    //     headers: { "Authorization" : 'Bearer ' + token
+    //     }
+    //   })
+    //   .then(response => {
+    //     console.log(response)
+    //     const messageTrue = response.data.message
+    //     this.$localStorage.set('messagePatient', messageTrue)
+    //     this.$router.push('patientdata')
+    //   })
+    //   .catch(error => {
+    //     console.log(error.response.data.error)
+    //     const errorinput = error.response.data.error
+    //     if(error){
+    //           this.error = errorinput
+    //           this.toggleLength = true
+    //     }
+    //   })
+    //   }
     },
+    async mounted() {
+          try {
+            const response = await axios.get('getpatientcode');
+            const tambah = response.data.patient.length
+            this.kodepasien = tambah + 1
+            console.log(this.kodepasien)
+          } catch(e) {
+            console.log(e);
+          }
+        }
 
 }
 </script>

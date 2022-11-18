@@ -1,158 +1,115 @@
 <template>
     <div class="container my-2">
+    <b-alert
+      v-model="showTop"
+      class="position-fixed fixed-top m-0 rounded-0"
+      style="z-index: 2000;"
+      variant="secondary"
+    >
+      {{message}}
+    </b-alert>
         <div class="d-flex">
             <img src="@/assets/Icon/schedule list.svg" width="70"/>
-            <h3 class="textmargin">SCHEDULE LIST</h3>
+            <h3 class="textmargin">LIST JADWAL DOKTER & PERAWAT</h3>
         </div>
         <div class="d-block">
             <b-card bg-variant="light" class="card text-center mx-2 my-2 text-purple">
             <div class="d-flex">
             <p class="m-0 p-2">Tanggal</p>
-            <b-form-datepicker id="example-datepicker" v-model="value" class="mb-2 hdrop"></b-form-datepicker>
+            <b-form-datepicker id="example-datepicker" v-model="values" class="mb-2 hdrop"></b-form-datepicker>
             </div>
-            <div v-if="value">
-                <div class="cardlist" >
-                    <b-card-text class="d-flex justify-content-start" >Perawat (08.00 - 16.00) </b-card-text>
-                    <img src="../assets/Icon/drop downblack.svg" @click="togglescheduleSus()" width="30px" class="ddown d-flex justify-content-end"/>
-            </div>
-            <div v-if="togglejadwalSus">
-                    <div class="cardlist" v-for="schedule in searchNurse" :key="schedule" >
-                        <p>{{schedule.doctor_name}}</p>
-                    </div>
-                </div>
-                <div class="cardlist" >
-                    <b-card-text class="d-flex justify-content-start" >Dokter Pagi (08.00 - 10.00) </b-card-text>
-                    <img src="../assets/Icon/drop downblack.svg" @click="toggleschedulePagi()" width="30px" class="ddown d-flex justify-content-end"/>
-            </div>
-            <div v-if="togglejadwalPagi">
-                     <div class="cardlist" v-for="schedule in searchList" :key="schedule" >
-                        <p>{{schedule.doctor_name}}</p>
-                    </div>
-                </div>
-                <div class="cardlist" >
-                    <b-card-text class="d-flex justify-content-start" >Dokter Siang (13.00 - 16.00) </b-card-text>
-                    <img src="../assets/Icon/drop downblack.svg" @click="togglescheduleSiang()" width="30px" class="ddown d-flex justify-content-end"/>
-            </div>
-            <div v-if="togglejadwalSiang">
-                     <div class="cardlist" v-for="schedule in searchList" :key="schedule" >
-                        <p>{{schedule.doctor_name}}</p>
-                    </div>
-                </div>
-                <div class="cardlist" >
-                    <b-card-text class="d-flex justify-content-start" >Dokter Sore (16.00 - 18.00) </b-card-text>
-                    <img src="../assets/Icon/drop downblack.svg" @click="togglescheduleSore()" width="30px" class="ddown d-flex justify-content-end"/>
-            </div>
-            <div v-if="togglejadwalSore">
-                    <div class="cardlist" v-for="schedule in searchList" :key="schedule" >
-                        <p>{{schedule.doctor_name}}</p>
-                    </div>
-                </div>
-                </div>
-                <div v-if="!value">
-                <p>Sorry, no matches were found</p>
-                <p>Try a new Search</p>
-                </div>
-            </b-card>
 
+            <template v-if="values">
+                <ApolloQuery
+                    :query="require('../graphql/schedulelist.gql')"
+                    :variables="{value : this.values}"
+                >
+                    <template v-slot="{ result: { loading, error, data } }">
+                    <!-- Loading -->
+                    <div v-if="loading" class="loading apollo">Loading...</div>
+
+                    <!-- Error -->
+                    <div v-else-if="error" class="error apollo">An error occurred</div>
+
+                    <!-- Result -->
+                    <div v-else-if="data" class="result apollo">
+                        <ul class="list-group list-group-light" v-for="schedule in data.schedule" :key="schedule.id">
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <div class="text-align-left">
+                            <div class="fw-bold">{{schedule.nurse_table.name.toUpperCase()}}</div>
+                            <div class="text-muted">PERAWAT</div>
+                            </div>
+                            <span class="">{{schedule.date}}</span>
+                        </li>
+                        </ul>
+                        <ul class="list-group list-group-light" v-for="schedule in data.schedule" :key="schedule.id">
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <div class="text-align-left">
+                            <div class="fw-bold">{{schedule.doctor_table.name.toUpperCase()}}</div>
+                            <div class="text-muted">DOKTER {{schedule.doctor_table.medic_facility.name.toUpperCase()}}</div>
+                            </div>
+                            <span class="">{{schedule.session.name.toUpperCase()}} : {{schedule.session.time}}</span>
+                        </li>
+                        </ul>
+                    </div>
+                    <!-- No result -->
+                    <div v-else class="no-result apollo">
+                        <b-card>
+                        <b-skeleton animation="fade" width="25%"></b-skeleton>
+                        <b-skeleton animation="fade" width="55%"></b-skeleton>
+                        </b-card>
+                        <b-card>
+                        <b-skeleton animation="fade" width="25%"></b-skeleton>
+                        <b-skeleton animation="fade" width="55%"></b-skeleton>
+                        </b-card>
+                        </div>
+                    </template>
+                </ApolloQuery>
+                </template>
+            </b-card>
         </div>
-        
-    </div></template>
+    </div>
+</template>
 
 <script>
-import axios from 'axios'
-//import { response } from 'express'
+//import gql from 'graphql-tag'
 export default {
     name: 'scheduleList',
     computed: {
-searchList(){              
-        const filter = this.value
-              ? this.schedules.filter(item => item.tanggal.includes(this.value) && item.role.includes(this.doctor)  )
-              : this.schedules
-              console.log(this.value)
-       return filter
-      },
-searchNurse(){              
-        const filter = this.value
-              ? this.schedules.filter(item => item.tanggal.includes(this.value) && item.role.includes(this.nurse) )
-              : this.schedules
-              console.log(this.value)
-       return filter
-      },
-// searchTanggal(){              
-//         const filter = this.value
-//               ? this.schedules.filter(item => item.tanggal.includes(this.value) )
-//               : this.schedules
-//               console.log(this.value)
-//        return filter
-//       },
- 
     },
+
+
     data() {
       return {
-        value: '',
-        nurse: 'nurse',
-        jadwal: 'pagi',
-        doctor: 'doctor',
-        togglejadwalSus: false,
-        togglejadwalPagi: false,
-        togglejadwalSiang: false,
-        togglejadwalSore: false, 
-        schedules: [],
+        values: '',
+        showTop: false
        
       }
     },
+    
     methods: {
-        togglescheduleSus(){
-            if(!this.togglejadwalSus){
-                this.togglejadwalSus = true
-            }else{
-                this.togglejadwalSus = false
-            }
-        },
-        toggleschedulePagi(){
-            if(!this.togglejadwalPagi){
-                this.togglejadwalPagi = true
-                this.jadwal = 'pagi'
-                console.log(this.jadwal)
-            }else{
-                this.togglejadwalPagi = false
-                this.jadwal = ''
-            }
-        },
-        togglescheduleSiang(){
-            if(!this.togglejadwalSiang){
-                this.togglejadwalSiang = true
-                this.jadwal = 'siang'
-            }else{
-                this.togglejadwalSiang = false
-                this.jadwal = ''
-            }
-        },
-        togglescheduleSore(){
-            if(!this.togglejadwalSore){
-                this.togglejadwalSore = true
-                this.jadwal = 'sore'
-            }else{
-                this.togglejadwalSore = false
-                this.jadwal = ''
-            }
-        }
 
 
     },
-    async mounted(){
-    try {
-    const response = await axios.get('https://flexible-marmoset-78.hasura.app/api/rest/schedule/get');
-    this.schedules = response.data.schedule;
-    console.log(response.data.schedule)
-  } catch(e) {
-    console.log(e);
-  }
-    }
+    mounted() {
+        const message = this.$localStorage.get('schedule')
+       if(message){
+          this.message = message
+               this.showTop = true
+              setTimeout(() => {
+            this.showTop = false;
+            localStorage.removeItem('schedule');
+                  }, 3000);
+       }
+    },
 }
 </script>
 
 <style scoped>
+
+.text-align-left{
+    text-align: left;
+}
 
 .lightdark-a {
   background-color: #DDDDDD;

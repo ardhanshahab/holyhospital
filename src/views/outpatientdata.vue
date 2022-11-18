@@ -1,15 +1,19 @@
 <template>
     <div class="container">
+      <b-alert
+      v-model="showTop"
+      class="position-fixed fixed-top m-0 rounded-0"
+      style="z-index: 2000;"
+      variant="secondary"
+    >
+      {{message}}
+    </b-alert>
         <div class="d-flex mt-2">
           <img src="../assets/Icon/outpatient report.svg" width="40px"/>
-            <h3 class="titlehero">OUTPATIENT REPORT</h3>
+            <h3 class="titlehero">REPORT PASIEN RAWAT JALAN</h3>
         </div>
         <div class="d-flex justify-content-end  my-3" v-if="sortBy === ''">          
-            <b-button class="lightdark-a text-black"   @click="sortnew()">SORT BY OLDEST TO NEWEST <img src="../assets/Icon/sort oldest to newest.svg" width="28px"/></b-button>
-        </div>
-
-        <div class="d-flex justify-content-end  my-3" v-if="sortBy === 'date_check'">          
-            <b-button class="lightdark-a text-black"   @click="sortnew()">SORT BY NEWEST TO OLDEST <img src="../assets/Icon/sort newest to oldest.svg" width="28px"/></b-button>
+            <b-button class="lightdark-a text-black"   @click="addoutpatient()">TAMBAH<img src="../assets/Icon/sort oldest to newest.svg" width="28px"/></b-button>
         </div>
         <div class="d-block">
 
@@ -42,22 +46,40 @@
 
       <template #row-details="row">
       <b-card class="textdetail lightdark-a">      
-                    <b-row class="mb-2">
+            <b-row class="mb-2">
             <b-col cols="2" class="text-sm-right"><b>Keluhan</b></b-col>
             <b-col cols="1" class="d-flex justify-content-end">:</b-col>
-            <b-col cols="9"><b-card class="">{{ row.item.medic_records[0].complaint }}</b-card></b-col>
+            <b-col cols="9"><b-card class="">{{ row.item.complaint }}</b-card></b-col>
           </b-row>
 
-                    <b-row class="mb-2">
+            <b-row class="mb-2">
             <b-col cols="2" class="text-sm-right"><b>Hasil Diagnosa</b></b-col>
             <b-col cols="1" class="d-flex justify-content-end">:</b-col>
-            <b-col cols="9"><b-card class="">{{ row.item.medic_records[0].diagnose }}</b-card></b-col>
+            <b-col cols="9"><b-card class="">{{ row.item.diagnose }}</b-card></b-col>
           </b-row>
 
-                    <b-row class="mb-2">
+            <b-row class="mb-2">
             <b-col cols="2" class="text-sm-right"><b>Resep Obat</b></b-col>
             <b-col cols="1" class="d-flex justify-content-end">:</b-col>
-            <b-col cols="9"><b-card class="">{{ row.item.medic_records[0].drug }}</b-card></b-col>
+            <b-col cols="9"><b-card class="">{{ row.item.drug }}</b-card></b-col>
+          </b-row>
+
+          <b-row class="mb-2">
+            <b-col cols="2" class="text-sm-right"><b>Tinggi</b></b-col>
+            <b-col cols="1" class="d-flex justify-content-end">:</b-col>
+            <b-col cols="9"><b-card class="">{{ row.item.height }}</b-card></b-col>
+          </b-row>
+
+          <b-row class="mb-2">
+            <b-col cols="2" class="text-sm-right"><b>Berat</b></b-col>
+            <b-col cols="1" class="d-flex justify-content-end">:</b-col>
+            <b-col cols="9"><b-card class="">{{ row.item.weight }}</b-card></b-col>
+          </b-row>
+
+          <b-row class="mb-2">
+            <b-col cols="2" class="text-sm-right"><b>Tekanan Darah</b></b-col>
+            <b-col cols="1" class="d-flex justify-content-end">:</b-col>
+            <b-col cols="9"><b-card class="">{{ row.item.bloodtemprature }}</b-card></b-col>
           </b-row>
       </b-card>
       </template>
@@ -111,10 +133,11 @@ export default {
       return {
         fields: [
                 { key: 'patient_code', label: 'Kode Pasien', thStyle: {background: '#DDDDDD', color: 'black'} },
-                { key: 'full_name', label: 'Nama Pasien', thStyle: {background: '#DDDDDD', color: 'black'} },
-                { key: 'medic_records[0].medic_facility.name', label: 'Jenis Poli', thStyle: {background: '#DDDDDD', color: 'black'} }, 
-                { key: 'medic_records[0].medicalStaffByMedicalStaff.name', label: 'Nama Dokter', thStyle: {background: '#DDDDDD', color: 'black'} },
-                { key: 'medic_records[0].datecheck', label: 'Tanggal Kontrol', thStyle: {background: '#DDDDDD', color: 'black'} },
+                { key: 'patientByPatientCode.full_name', label: 'Nama Pasien', thStyle: {background: '#DDDDDD', color: 'black'} },
+                { key: 'doctor_table.medic_facility.name', label: 'Jenis Poli', thStyle: {background: '#DDDDDD', color: 'black'} }, 
+                { key: 'doctor_table.name', label: 'Nama Dokter', thStyle: {background: '#DDDDDD', color: 'black'} }, 
+                { key: 'nurse_table.name', label: 'Nama Perawat', thStyle: {background: '#DDDDDD', color: 'black'} },
+                { key: 'datecheck', label: 'Tanggal Kontrol', thStyle: {background: '#DDDDDD', color: 'black'} },
                 { key: 'show_detail', label: 'Action', thStyle: {background: '#DDDDDD', color: 'black'} },                
                 ],
         items:[],
@@ -135,19 +158,13 @@ export default {
         sortBy: '',
         perPage: 10,
         currentPage: 1,
-        
+        showTop: false
 }
     },
     
     methods: {
-        sortnew() {
-            if (this.sortBy == ''){
-                this.sortBy = 'date_check'
-              console.log(this.currentPage)
-            }
-            else {
-                this.sortBy = ''
-            }
+        addoutpatient() {
+          this.$router.push('/addoutpatient');
         },
         // fetchOutpatient(){
         //   this.$store.dispatch('outpatient/fetchoutpatientReport')
@@ -157,20 +174,22 @@ export default {
     
   },
   async mounted(){
-   // this.fetchOutpatient()
-  try {
-    const response1 = await axios.get('outpatient/report');
-   this.items = response1.data.patient;
-//    const dataOne = response1.data.data
-    console.log(response1.data.patient)
-//    console.log(response1.data.data.id)
-    // const response2 = await axios.get(`http://localhost:8080/api/outpatient/:id/process`);
-    // this.arrayTwo = response2.data.data;
-    // console.log(this.arrayTwo)
+    try {
+    const response = await axios.get('outpatient/report');
+   this.items = response.data.medic_record;
+    console.log(response.data.medic_record)
   } catch(e) {
     console.log(e);
   }
-
+  const message = this.$localStorage.get('outpatient')
+       if(message){
+          this.message = message
+               this.showTop = true
+              setTimeout(() => {
+            this.showTop = false;
+            localStorage.removeItem('outpatient');
+                  }, 3000);
+       }
 
   }
   

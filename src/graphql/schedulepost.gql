@@ -1,0 +1,9 @@
+mutation schedulepost ($date: date, $doctor_id: Int, $session_id: Int, $nurse_id: Int,) {
+  insert_schedule_one(object: {date: $date, doctor_id: $doctor_id, session_id: $session_id, nurse_id: $nurse_id}) {
+    date
+    doctor_id
+    id
+    nurse_id
+    session_id
+  }
+}
