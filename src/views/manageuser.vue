@@ -1,6 +1,16 @@
 <template>
    <div class="card-container">
     <div class="card-head">
+      <b-overlay
+          id="overlay-background"
+          :variant="variant"
+          :opacity="opacity"
+          :blur="blur"
+          :show="show"
+          :rounded="rounded"
+          :isLoading="isLoading"
+          no-wrap
+        ></b-overlay>
       <b-alert
       v-model="showTop"
       class="position-fixed fixed-top m-0 rounded-0"
@@ -17,73 +27,72 @@
 
     <!-- <div class="search">
     <div class="input-group mb-3">
-  <input type="search" class="form-control" placeholder="Search Name or Email" v-model="keyword">
-  <button class="input-group-text" @click="searchItem()"><img class="img11" src="../assets/search.png"></button>
+    <input type="search" class="form-control" placeholder="Search Name or Email" v-model="keyword">
+    <button class="input-group-text" @click="searchItem()"><img class="img11" src="../assets/search.png"></button>
     </div>
-</div> -->
+    </div> -->
 
     <div class="card-body">
       <template>
-  <ApolloQuery
-    :query="require('../graphql/getuser.gql')"
-  >
-    <template v-slot="{ result: { loading, error, data } }">
-      <!-- Loading -->
-      <div v-if="loading" class="loading apollo">Loading...</div>
+        <ApolloQuery
+          :query="require('../graphql/getuser.gql')"
+        >
+            <template v-slot="{ result: { loading, error, data } }">
+              <!-- Loading -->
+              <div v-if="loading" class="loading apollo">Loading...</div>
 
-      <!-- Error -->
-      <div v-else-if="error" class="error apollo">An error occurred</div>
+              <!-- Error -->
+              <div v-else-if="error" class="error apollo">An error occurred</div>
 
-      <!-- Result -->
-      <div v-else-if="data" class="result apollo">
-                  <table class="table" id="my-table">
-            <thead>
-              <tr>
-                <th scope="col">Nama User</th>
-                <th scope="col">Email</th>
-                <th scope="col">Jenis Kelamin</th>
-                <th scope="col">Role</th>
-                <th scope="col">Action</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="user in data.user" :key="user.id" id="my-table">
-                <td scope="row">{{user.username}}</td>
-                <td scope="row">{{user.email}}</td>
-                <td scope="row">{{user.gender}}</td>
-                <td scope="row">{{user.role.name}}</td>
-                <td><button @click="redirect(user.id)">EDIT</button></td>
-              </tr>
-            </tbody>
-          </table>
-      </div>
-      <!-- No result -->
-      <div v-else class="no-result apollo">
-        <b-skeleton-table
-                :rows="7"
-                :columns="10"
-                :table-props="{ bordered: true, striped: true }"
-              ></b-skeleton-table>
-          </div>
-    </template>
-  </ApolloQuery>
-</template>
-
+              <!-- Result -->
+              <div v-else-if="data" class="result apollo">
+                          <table class="table" id="my-table">
+                    <thead>
+                      <tr>
+                        <th scope="col">Nama User</th>
+                        <th scope="col">Email</th>
+                        <th scope="col">Jenis Kelamin</th>
+                        <th scope="col">Role</th>
+                        <th scope="col">Action</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr v-for="user in data.user" :key="user.id" id="my-table">
+                        <td scope="row">{{user.username}}</td>
+                        <td scope="row">{{user.email}}</td>
+                        <td scope="row">{{user.gender}}</td>
+                        <td scope="row">{{user.role.name}}</td>
+                        <td><button @click="redirect(user.id)">EDIT</button></td>
+                      </tr>
+                    </tbody>
+                  </table>
+              </div>
+              <!-- No result -->
+              <div v-else class="no-result apollo">
+                <b-skeleton-table
+                        :rows="7"
+                        :columns="10"
+                        :table-props="{ bordered: true, striped: true }"
+                      ></b-skeleton-table>
+                  </div>
+            </template>
+          </ApolloQuery>
+        </template>
     </div>
     <div class="d-flex my-2 ">
-<p class="mx-4">Page {{currentPage}} of {{totalPage}}</p>    
-<b-pagination
-      v-model="currentPage"
-      :total-rows="totalRows"
-      :per-page="perPage"
-      aria-controls="my-table"
-      label-next-page="nextPage"
-      label-prev-page="prevPage"
-    >
-    </b-pagination>        
-    </div>
+    <p class="mx-4">Page {{currentPage}} of {{totalPage}}</p>    
+    <b-pagination
+          v-model="currentPage"
+          :total-rows="totalRows"
+          :per-page="perPage"
+          aria-controls="my-table"
+          label-next-page="nextPage"
+          label-prev-page="prevPage"
+        >
+        </b-pagination>        
+        </div>
 
-    </div> 
+        </div> 
     
 </template>
 
@@ -94,13 +103,6 @@ export default {
     name: "manageUser",
     data(){
       return{
-        // fields: [
-        //         { key: 'username', label: 'Nama User', thStyle: {background: '#DDDDDD', color: 'black'} },
-        //         { key: 'email', label: 'Email', thStyle: {background: '#DDDDDD', color: 'black'} }, 
-        //         { key: 'gender', label: 'Jenis Kelamin', thStyle: {background: '#DDDDDD', color: 'black'} },
-        //         { key: 'role', label: 'Role', thStyle: {background: '#DDDDDD', color: 'black'} },
-        //         { key: 'id', label: 'Action', thStyle: {background: '#DDDDDD', color: 'black'} },                
-        //         ],
         items: [],
         perPage: 10,
         currentPage: 1,
@@ -108,21 +110,16 @@ export default {
         message: '',
         keyword: '',
         toggle: false,
+        variant: 'transparent',
+        opacity: 0.85,
+        blur: '5px',
+        isLoading: true,
+        show: false,
+        rounded: 'lg'
       }
     },
     computed: {
-    searchItem(){              
-
-        const filter = this.keyword
-              ? this.items.filter(item => item.full_name.includes(this.keyword) || item.email.includes(this.keyword))
-              : this.listItem
-              console.log(this.listItem) 
-       return filter
-      }, 
-      // pageList(){
-        
-
-      // },
+  
     totalRows() {
         return this.items.length
         }, 
@@ -156,12 +153,16 @@ export default {
   // } catch(e) {
   //   console.log(e);
   // }
-  const message = this.$localStorage.get('messageUser')
+  const message = this.$localStorage.get('user')
     if(message){
                 this.message = message
                this.showTop = true
+               this.show = true;
               setTimeout(() => {
-                this.$localStorage.remove('messageUser')
+            this.showTop = false;
+            // this.show = false;
+            location.reload();
+                this.$localStorage.remove('user')
             this.showTop = false;
                   }, 2000);
     }

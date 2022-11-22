@@ -1,5 +1,15 @@
 <template>
     <div class="container">
+      <b-overlay
+          id="overlay-background"
+          :variant="variant"
+          :opacity="opacity"
+          :blur="blur"
+          :show="show"
+          :rounded="rounded"
+          :isLoading="isLoading"
+          no-wrap
+        ></b-overlay>
       <b-alert
       v-model="showTop"
       class="position-fixed fixed-top m-0 rounded-0"
@@ -15,7 +25,7 @@
         <div class="d-flex justify-content-end  my-3" v-if="sortBy === ''">          
             <b-button class="lightdark-a text-black"   @click="addoutpatient()">TAMBAH<img src="../assets/Icon/sort oldest to newest.svg" width="28px"/></b-button>
         </div>
-        <div class="d-block">
+        <div class="d-block" v-if="!show">
 
     <b-table
       id="my-table"
@@ -141,16 +151,6 @@ export default {
                 { key: 'show_detail', label: 'Action', thStyle: {background: '#DDDDDD', color: 'black'} },                
                 ],
         items:[],
-        tableVariants: [
-          'primary',
-          'secondary',
-          'info',
-          'danger',
-          'warning',
-          'success',
-          'light',
-          'dark'
-        ],
         striped: false,
         hover: true,
         headVariant: 'light',
@@ -158,7 +158,13 @@ export default {
         sortBy: '',
         perPage: 10,
         currentPage: 1,
-        showTop: false
+        showTop: false,
+        variant: 'transparent',
+        opacity: 0.85,
+        blur: '5px',
+        isLoading: true,
+        show: false,
+        rounded: 'lg',
 }
     },
     
@@ -185,8 +191,10 @@ export default {
        if(message){
           this.message = message
                this.showTop = true
+               this.show = true;
               setTimeout(() => {
             this.showTop = false;
+            location.reload();
             localStorage.removeItem('outpatient');
                   }, 3000);
        }

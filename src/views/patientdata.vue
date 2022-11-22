@@ -1,5 +1,25 @@
 <template>
-   <div class="container">
+    <div>
+      <b-overlay
+          id="overlay-background"
+          :variant="variant"
+          :opacity="opacity"
+          :blur="blur"
+          :show="show"
+          :rounded="rounded"
+          :isLoading="isLoading"
+          no-wrap
+        ></b-overlay>
+        <!-- <b-modal ref="my-modal" v-model="showModal" hide-footer title="Hapus Data Pasien">
+      <div class="d-block text-center">
+        <h3>Apakah anda yakin?</h3>
+      </div>
+      <div class="d-block text-center">
+      <b-button class="mt-3" variant="outline-danger" block @click="hideModal">Tidak</b-button>
+      <b-button class="mt-3" variant="outline-success" block @click="hapusData">ya</b-button>
+      </div>
+      </b-modal> -->
+    <div class="container" v-if="!show">
      <b-alert
       v-model="showTop"
       class="position-fixed fixed-top m-0 rounded-0"
@@ -13,7 +33,7 @@
             DATA PASIEN 
     </div>
     <div class="d-flex justify-content-end my-3">          
-            <b-button class="lightdark-a text-black" @click="addpatient()">TAMBAH PASIEN <img src="../assets/Icon/sort oldest to newest.svg" width="28px"/></b-button>
+            <b-button class="lightdark-a btn text-white" @click="addpatient()">TAMBAH PASIEN</b-button>
         </div>
 
 <template>
@@ -49,7 +69,8 @@
           <td scope="row">{{user.bloodtype}}</td>
           <td scope="row">{{user.birthdate}}</td>
           <td scope="row">{{user.gender}}</td>
-          <td><button @click="redirect(user.id)" class="btn w100 btn-primary">EDIT</button></td>
+          <td><button @click="redirect(user.id)" class="btn w100 btn-primary">EDIT</button>
+              <button @click="hapus(user.id)" class="btn w100 btn-danger">DELETE</button></td>
         </tr>
       </tbody>
     </table>
@@ -78,12 +99,12 @@
     >
     </b-pagination>        
     </div>
-
 </div> 
+</div>
 </template>
 
 <script>
-//import axios from 'axios';
+import gql from 'graphql-tag'
 export default {
     name: "patientData",
     computed: {
@@ -118,10 +139,21 @@ export default {
         perPage: 10,
         currentPage: 1,
         keyword: '',
+        variant: 'transparent',
+        opacity: 0.85,
+        blur: '5px',
+        isLoading: true,
+        show: false,
+        rounded: 'lg',
+        showModal: false,
+        hapusData: false,
         
       }
     },
     methods: {
+      hideModal() {
+        this.$refs['my-modal'].hide()
+      },
       redirect(id) {
               this.$router.push('editpatient/' + id);
               console.log(id)
@@ -129,7 +161,39 @@ export default {
       addpatient() {
           this.$router.push('/addpatient');
         },
-    },
+        hapus(id){
+          // if(!this.showModal){
+          //   this.showModal = true
+          // }
+          // else{
+          // this.showModal = false
+          // }
+          // if(this.hapusData == true){
+          let user_id = id;
+              this.$apollo.mutate({
+                mutation: gql`
+                mutation hapus($user_id: Int!) {
+                  delete_patient_by_pk(id: $user_id){                  
+                    id
+                    full_name
+                    patient_code
+                    }
+                  }
+                `,
+                variables: {
+                  user_id,
+                },
+                // refetchQueries: ["getUsers"],
+              });
+              const message = 'Data Telah Berhasil Dihapus'
+              this.$localStorage.set('patient', message)
+              this.$router.go()
+          // }else{
+          //   this.hapusData = false
+          // }
+            },
+                },
+      
     mounted() {
       // this.$router.go(0)
         const message = this.$localStorage.get('patient')
@@ -137,8 +201,11 @@ export default {
         // location.reload(),
           this.message = message
                this.showTop = true
+               this.show = true;
               setTimeout(() => {
             this.showTop = false;
+            // this.show = false;
+            location.reload();
             localStorage.removeItem('patient');
                   }, 3000);
                   
@@ -189,6 +256,8 @@ background-color: #F3F3F3;
     
     height: 33px;
     width: auto;
+    margin-left: 5px;
+    margin-right: 5px;
     background: #794B93;
 }
 .input-group{

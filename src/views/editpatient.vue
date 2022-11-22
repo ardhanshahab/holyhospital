@@ -27,7 +27,8 @@
       <div class="row mb-3">
         <label for="inputName3" class="col-sm-2 col-form-label">Tanggal Lahir</label>
           <div class="col-sm-10">
-            <input type="name" v-model="patient.birthdate" class="form-control" id="inputName3">
+            <b-datepicker v-model="patient.birthdate" class="form-control" dropright id="example-datepicker"></b-datepicker>
+            <!-- <input type="name" v-model="patient.birthdate" class="form-control" id="inputName3"> -->
               <div v-if="toggleLength" class="d-flex my-1 toggle text-danger">
                 <b-icon icon="info-circle" class="mx-2"></b-icon>{{error.full_name}}
               </div>
@@ -167,7 +168,7 @@ export default {
             patient_code: this.patient.patient_code,
         }
       });
-              this.$router.push('/patientdata')
+              this.$router.push({name: 'patientData'})
               const message = 'Data Telah Berhasil Diubah'
               this.$localStorage.set('patient', message)
               console.log(message)

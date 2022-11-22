@@ -1,6 +1,9 @@
 <template>
   <b-overlay
           id="overlay-background"
+          :variant="variant"
+          :opacity="opacity"
+          :blur="blur"
           :show="show"
           :rounded="rounded"
           :isLoading="isLoading"
@@ -30,6 +33,9 @@ export default {
   },
   data() {
     return {
+      variant: 'transparent',
+        opacity: 0.85,
+        blur: '5px',
       isLoading: true,
       show: true,
       rounded: 'lg'
