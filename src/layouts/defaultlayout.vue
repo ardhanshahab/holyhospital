@@ -1,5 +1,15 @@
 <template>
 <div class="row">
+    <b-overlay
+          id="overlay-background"
+          :variant="variant"
+          :opacity="opacity"
+          :blur="blur"
+          :show="show"
+          :rounded="rounded"
+          :isLoading="isLoading"
+          no-wrap
+        ></b-overlay>
     <navbar-vue></navbar-vue>
         <div class="col-3 sidebarungu">    
             <navdraw-vue></navdraw-vue>
@@ -18,7 +28,23 @@ export default {
     components: {
         navbarVue,
         navdrawVue,
+    },
+    data() {
+    return {
+      variant: 'transparent',
+        opacity: 0.85,
+        blur: '5px',
+      isLoading: true,
+      show: true,
+      rounded: 'lg'
     }
+  },
+  mounted() {
+    setTimeout(() => {
+      this.isLoading = false;
+      this.show = false;
+    }, 3000);
+  }
 }
 </script>
 

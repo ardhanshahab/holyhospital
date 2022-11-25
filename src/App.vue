@@ -1,5 +1,7 @@
 <template>
-  <b-overlay
+<div class="noscroll">
+    <component :is="layout">
+      <b-overlay
           id="overlay-background"
           :variant="variant"
           :opacity="opacity"
@@ -7,14 +9,13 @@
           :show="show"
           :rounded="rounded"
           :isLoading="isLoading"
-        >
-<div class="noscroll">
-    <component :is="layout">
-      
+          no-wrap
+        ></b-overlay>
+        <div v-if="alert.message" :class="`alert ${alert.type}`">{{alert.message}}</div>
       <router-view v-if="!isLoading"></router-view>
     </component>
 </div>
-</b-overlay>
+
 </template>
 
 <script>
@@ -26,7 +27,10 @@ export default {
   computed: {
     layout(){
       return(this.$route.meta.layout || defaultLayout ) + '-layout'
-    }
+    },
+    alert () {
+            return this.$store.state.alert
+        }
   },
   components: {
     //Loadingscreen
@@ -46,7 +50,13 @@ export default {
       this.isLoading = false;
       this.show = false;
     }, 3000);
-  }
+  },
+    watch:{
+        $route (){
+            // clear alert on location change
+            this.$store.dispatch('alert/clear');
+        }
+    } 
 }
 </script>
 

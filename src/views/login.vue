@@ -22,38 +22,38 @@
         <div class="card-body">
           <div class="my-4">
             <img class="img5" src="../assets/login.png">
-                </div>
-                <form @submit.prevent="userLogin">    
-                    <div class="input-group flex-nowrap mb-3">
-                    <span class="input-group-text" id="addon-wrapping">
-                      <img class="imglogin" src="../assets/login2.png">
-                  </span>
-                 
-                
-                    <input type="email" v-model="form.email" class="form-control" placeholder="Email">
-                    </div>
-                    <div v-if="apierror" class="d-flex mx-2 my-2 text-danger">
-                      <b-icon icon="info-circle" class="mt-2 mx-2"></b-icon>{{message.email}}
-                    </div>
-        
-                    <div class="input-group flex-nowrap mb-3">
-                    <span class="input-group-text" id="addon-wrapping"><img class="imglogin" src="../assets/password2.png"></span>
-                    <input type="password" v-model="form.password" class="form-control" placeholder="Password">
-                  </div>
-                    <div v-if="apierror" class="d-flex mx-2 my-2 text-danger">
-                      <b-icon icon="info-circle" class="mt-2 mx-2"></b-icon>{{message.password}}
-                    </div>
-  
-                    <div class="d-grid gap-2">
-                    <button type="submit" class="btn btn-primary">ADMIN LOGIN</button>
-                    </div>
-                  </form>
+          </div>
+          <form @submit.prevent="handleSubmit">
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" v-model="username" name="username" class="form-control" :class="{ 'is-invalid': submitted && !username }" />
+                <div v-show="submitted && !username" class="invalid-feedback">Username is required</div>
             </div>
-            <br><br>
+            <div class="form-group">
+                <label htmlFor="password">Password</label>
+                <input type="password" v-model="password" name="password" class="form-control" :class="{ 'is-invalid': submitted && !password }" />
+                <div v-show="submitted && !password" class="invalid-feedback">Password is required</div>
+            </div>
+            <div class="form-group-btn">
+                <button class="btn btn-primary" :disabled="loggingIn">Login</button>
+                <!-- <img v-show="loggingIn" src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA==" /> -->
+                <b-overlay
+          id="overlay-background"
+          :variant="variant"
+          :opacity="opacity"
+          :blur="blur"
+          v-show="loggingIn"
+          :rounded="rounded"
+          :isLoading="isLoading"
+          no-wrap
+        ></b-overlay>
+              </div>
+        </form>
+            </div>
+            <!-- <br><br>
             <a href="/findemail" class="text-center text-decoration-none">FORGOT PASSWORD</a>
             <br><br>
-            <p class=" text-center">Don't have an account yet?<a href="/register" class="text2 text-decoration-none"> Sign Up</a></p>
-
+            <p class=" text-center">Don't have an account yet?<a href="/register" class="text2 text-decoration-none"> Sign Up</a></p> -->
         </div>
        
     </div>
@@ -83,68 +83,38 @@ report.
 
 export default {
     name: "loginPage",
-    data(){
-      return{
-        form: {
-          email: '',
-          password: '',
-        },
-        apierrorEmail: false,
-        apierrorPassword: false,
-        apierror: false,
-        errors: '',
-          message: [],
-          showTop: false,
-
-      }
+    data () {
+        return {
+            username: '',
+            password: '',
+            submitted: false,
+            variant: 'transparent',
+            opacity: 0.85,
+            blur: '5px',
+            isLoading: true,
+            show: true,
+            rounded: 'lg'
+        }
+    },
+    computed: {
+        loggingIn () {
+            return this.$store.state.authentication.status.loggingIn;
+        }
+    },
+    created () {
+        // reset login status
+        this.$store.dispatch('authentication/logout');
     },
     methods: {
-      userLogin() {
-        if (this.form.email == "admin@holyhos.co.id" && this.form.password == "admin"){
-          this.$router.push({name: 'homePage'})
-        }else{
-          this.showTop = true
-            this.message = "email atau password salah"
+        handleSubmit () {
+            this.submitted = true;
+            const { username, password } = this;
+            const { dispatch } = this.$store;
+            if (username && password) {
+                dispatch('authentication/login', { username, password });
+            }
         }
-        
-        /*
-        this.$store.dispatch('login', this.form)
-        .then(response => {
-          console.log(response)
-          this.$router.push({name: 'homePage'})
-        }).catch(error => {
-          const errorApi = error.response.data.error
-          const errorEmail = error.response.data.error.email
-          const errorPass = error.response.data.error.password
-          if(errorEmail || errorPass){
-            this.apierror = true
-            this.message = errorApi
-          }
-          if(errorApi == "Wrong Password" || errorApi == "No Record Found"){
-            this.showTop = true
-            this.message = errorApi
-          }else{
-            this.showTop = false
-          }
-          console.log(error.response.data.error)
-          // this.apierror = true
-          // this.errors = error.response.data.error
-        })
-        */
-      }
-    },
-        mounted(){
-       const message = this.$localStorage.get('messagePass')
-       if(message){
-          this.message = message
-               this.showTop = true
-              setTimeout(() => {
-            this.showTop = false;
-                  }, 2000);
-       }
-        
     }
-
 
 }
 </script>
@@ -157,6 +127,17 @@ export default {
     justify-content: center;
 }
 
+.form-group{
+  margin: 2px;
+
+}
+
+.form-group-btn{
+  margin: 10px;
+  display: flex;
+  justify-content: center;
+
+}
 .login-form{
     height:auto;
     width: 330px;
@@ -202,6 +183,9 @@ input[type="password"]{
 
 .btn{
   background:#794B93;
+  display: flexbox;
+  justify-content: center;
+  width: 100px;
 }
 
 a{
