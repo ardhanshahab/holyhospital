@@ -20,91 +20,112 @@
       {{message}}
     </b-alert>
         <img class="img1" src="../assets/list.svg">
-       
-            USER LIST
-            
+            USER LIST  
     </div>
 
-    <!-- <div class="search">
-    <div class="input-group mb-3">
-    <input type="search" class="form-control" placeholder="Search Name or Email" v-model="keyword">
-    <button class="input-group-text" @click="searchItem()"><img class="img11" src="../assets/search.png"></button>
+    <div class="search">
+      <div class="input-group mb-3">
+         <input type="search" class="form-control" placeholder="Search Name" v-model="keyword">
+         <button class="input-group-text" @click="searchItem()"><img class="img11" src="../assets/search.png"></button>
+      </div>
     </div>
-    </div> -->
-
-    <div class="card-body">
-      <template>
+    <template v-if="search">
         <ApolloQuery
-          :query="require('../graphql/getuser.gql')"
-        >
-            <template v-slot="{ result: { loading, error, data } }">
-              <!-- Loading -->
-              <div v-if="loading" class="loading apollo">Loading...</div>
+                    :query="require('../graphql/getuserbyname.gql')"
+                    :variables="{value : this.keyword}"
+                >
+                <template v-slot="{ result: { loading, error, data } }">
+                    <!-- Loading -->
+                    <div v-if="loading" class="loading apollo">Loading...</div>
 
-              <!-- Error -->
-              <div v-else-if="error" class="error apollo">An error occurred</div>
+                    <!-- Error -->
+                    <div v-else-if="error" class="error apollo">An error occurred {{error}}</div>
 
-              <!-- Result -->
-              <div v-else-if="data" class="result apollo">
-                          <table class="table" id="my-table">
-                    <thead>
-                      <tr>
-                        <th scope="col">Nama User</th>
-                        <th scope="col">Email</th>
-                        <th scope="col">Jenis Kelamin</th>
-                        <th scope="col">Role</th>
-                        <th scope="col">Action</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr v-for="user in data.user" :key="user.id" id="my-table">
-                        <td scope="row">{{user.username}}</td>
-                        <td scope="row">{{user.email}}</td>
-                        <td scope="row">{{user.gender}}</td>
-                        <td scope="row">{{user.role.name}}</td>
-                        <td><button @click="redirect(user.id)">EDIT</button></td>
-                      </tr>
-                    </tbody>
-                  </table>
-              </div>
-              <!-- No result -->
+                    <!-- Result -->
+                    <div v-else-if="data" class="result apollo">
+                      <div class="card-body">
+                        <table class="table" id="my-table">
+                          <thead>
+                            <tr>
+                                          <th scope="col">Nama User</th>
+                                          <th scope="col">Email</th>
+                                          <th scope="col">Jenis Kelamin</th>
+                                          <th scope="col">Role</th>
+                                          <th scope="col">Action</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr v-for="user in data.user" :key="user.id" id="my-table">
+                                          <td scope="row">{{user.username}}</td>
+                                          <td scope="row">{{user.email}}</td>
+                                          <td scope="row">{{user.gender}}</td>
+                                          <td scope="row">{{user.role.name}}</td>
+                                          <td><button @click="redirect(user.id)">EDIT</button></td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                      <!-- No result -->
               <div v-else class="no-result apollo">
                 <b-skeleton-table
                         :rows="7"
                         :columns="10"
                         :table-props="{ bordered: true, striped: true }"
-                      ></b-skeleton-table>
-                  </div>
-            </template>
-          </ApolloQuery>
-        </template>
-    </div>
-    <div class="d-flex my-2 ">
-    <p class="mx-4">Page {{currentPage}} of {{totalPage}}</p>    
-    <b-pagination
-          v-model="currentPage"
-          :total-rows="totalRows"
-          :per-page="perPage"
-          aria-controls="my-table"
-          label-next-page="nextPage"
-          label-prev-page="prevPage"
-        >
-        </b-pagination>        
-        </div>
+                ></b-skeleton-table>
+              </div>
+              </template>
+                </ApolloQuery>
+      </template>
 
-        </div> 
+    <div class="card-body" v-if="!search">
+      <table class="table" id="my-table">
+        <thead>
+          <tr>
+                        <th scope="col">Nama User</th>
+                        <th scope="col">Email</th>
+                        <th scope="col">Jenis Kelamin</th>
+                        <th scope="col">Role</th>
+                        <th scope="col">Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="user in users" :key="user.id" id="my-table">
+                        <td scope="row">{{user.username}}</td>
+                        <td scope="row">{{user.email}}</td>
+                        <td scope="row">{{user.gender}}</td>
+                        <td scope="row">{{user.role.name}}</td>
+                        <td><button @click="redirect(user.id)">EDIT</button></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+              <!-- No result -->
+              <!-- <div v-else class="no-result apollo">
+                <b-skeleton-table
+                        :rows="7"
+                        :columns="10"
+                        :table-props="{ bordered: true, striped: true }"
+                      ></b-skeleton-table>
+                    </div> -->
+    <div class="d-flex my-2 ">
+    <p class="mx-4">Total Data User: {{totalRows}}</p>    
+    </div>
+</div> 
     
 </template>
 
 <script>
-//import axios from 'axios'
+import gql from 'graphql-tag'
 
 export default {
     name: "manageUser",
     data(){
       return{
+        search: false,
         items: [],
-        perPage: 10,
+        perPage: 5,
         currentPage: 1,
         showTop: false,
         message: '',
@@ -118,10 +139,38 @@ export default {
         rounded: 'lg'
       }
     },
+    apollo: { 
+      users: {
+          query: gql`
+          query getuser {
+            user {
+            id
+            email
+            password
+            username
+            gender
+            role {
+              id
+              name
+            }
+          }
+        }
+          `, 
+          variables () {
+              return {
+                  id: this.index,
+              }
+            },
+          update: (data) => {
+            console.log(data.user)
+            return data.user;
+          },
+      },
+ },
     computed: {
-  
     totalRows() {
-        return this.items.length
+      const datauser = this.users.length
+        return datauser
         }, 
         totalPage() {
             const x = this.perPage
@@ -129,30 +178,30 @@ export default {
             const z = y / x  
             return Math.floor(z) + 1       
             },
-                  listItem() {
-                    return this.items.slice(
-                    (this.currentPage - 1) * this.perPage,
-                    this.currentPage * this.perPage,
-  )
-        
+              listItem() {
+                return this.users.slice(
+                (this.currentPage - 1) * this.perPage,
+                this.currentPage * this.perPage,
+                )
 		}
   //return slice
     },
     methods: {
       redirect(id) {
-              this.$router.push('userdata/' + id);
-              console.log(id)
-
-              }
+          this.$router.push('userdata/' + id);
+          console.log(id)
+              },
+      searchItem(){
+        if(this.search == false){
+        this.search = true
+        }else{
+          this.keyword = ''
+          this.search = false
+        }
+      }
     },
-  async mounted() {
-  //           try {
-  //   const response1 = await axios.get('user');
-  //  this.items = response1.data.user;
-  //   console.log(response1.data.user)
-  // } catch(e) {
-  //   console.log(e);
-  // }
+  mounted() {
+    console.log(this.totalRows)
   const message = this.$localStorage.get('user')
     if(message){
                 this.message = message

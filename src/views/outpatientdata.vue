@@ -96,17 +96,8 @@
 
       
     </b-table>
-<div class="d-flex my-2 ">
-<p class="mx-4">Page {{currentPage}} of {{totalPage}}</p>    
-<b-pagination
-      v-model="currentPage"
-      :total-rows="totalRows"
-      :per-page="perPage"
-      aria-controls="my-table"
-      label-next-page="nextPage"
-      label-prev-page="prevPage"
-    >
-    </b-pagination>        
+    <div class="d-flex my-2 ">
+    <p class="mx-4">Total Data User: {{totalRows}}</p>    
     </div>
 
 </div>

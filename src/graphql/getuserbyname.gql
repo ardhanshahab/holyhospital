@@ -1,0 +1,15 @@
+query getuser ($value: String) {
+  user(where: {username: {_eq: $value}}) {
+    id
+    username
+    email
+    password
+    facility_id
+    gender
+    created_at
+    role {
+      id
+      name
+    }
+  }
+}

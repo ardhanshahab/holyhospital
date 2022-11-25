@@ -1,0 +1,15 @@
+query patient_by_name ($value: String) {
+  patient(where: {full_name: {_eq: $value}}) {
+    id
+    full_name
+    bloodtype
+    birthdate
+    address
+    gender
+    medic_record
+    medic_session
+    medic_staff
+    national_id
+    patient_code
+  }
+}

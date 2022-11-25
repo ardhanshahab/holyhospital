@@ -32,12 +32,72 @@
         <img class="img1" src="../assets/Icon/add patient data.svg">
             DATA PASIEN 
     </div>
-    <div class="d-flex justify-content-end my-3">          
+
+    <div class="row">
+      <div class="col-6">          
             <b-button class="lightdark-a btn text-white" @click="addpatient()">TAMBAH PASIEN</b-button>
         </div>
+        <div class="col-6 ">
+      <div class="d-flex input-group mb-3">
+         <input type="search" class="form-control" placeholder="Search Name" v-model="keyword">
+         <button class="input-group-text" @click="searchItem()"><img class="img11" src="../assets/search.png"></button>
+      </div>
+    </div>
+    </div>
+    <template v-if="search">
+      <ApolloQuery
+    :query="require('../graphql/patientbyname.gql')"
+    :variables="{value : this.keyword}"
+  >
+    <template v-slot="{ result: { loading, error, data } }">
+      <!-- Loading -->
+      <div v-if="loading" class="loading apollo">Loading...</div>
 
-<template>
-  <ApolloQuery
+      <!-- Error -->
+      <div v-else-if="error" class="error apollo">An error occurred</div>
+
+      <!-- Result -->
+      <div v-else-if="data" class="result apollo">
+            <table class="table">
+      <thead>
+        <tr class="lightdark-a">
+          <th scope="col">Kode Pasien</th>
+          <th scope="col">Nama Pasien</th>
+          <th scope="col">NIK</th>
+          <th scope="col">Golongan Darah</th>
+          <th scope="col">Tanggal Lahir</th>
+          <th scope="col">Jenis Kelamin</th>
+          <th scope="col">Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="user in data.patient" :key="user.id" id="my-table" class="lightdark-b ">
+          <td scope="row">{{user.patient_code}}</td>
+          <td scope="row">{{user.full_name}}</td>
+          <td scope="row">{{user.national_id}}</td>
+          <td scope="row">{{user.bloodtype}}</td>
+          <td scope="row">{{user.birthdate}}</td>
+          <td scope="row">{{user.gender}}</td>
+          <td><button @click="redirect(user.id)" class="btn w100 btn-primary">EDIT</button>
+              <button @click="hapus(user.id)" class="btn w100 btn-danger">DELETE</button></td>
+        </tr>
+      </tbody>
+    </table>
+      </div>
+      <!-- No result -->
+      <div v-else class="no-result apollo">
+        <b-skeleton-table
+                :rows="5"
+                :columns="10"
+                :table-props="{ bordered: true, striped: true }"
+              ></b-skeleton-table>
+          </div>
+        </template>
+      </ApolloQuery>
+    </template>
+
+    <template v-if="!search">  
+      <ApolloQuery
     :query="require('../graphql/patientdata.gql')"
   >
     <template v-slot="{ result: { loading, error, data } }">
@@ -86,19 +146,6 @@
     </template>
   </ApolloQuery>
 </template>
-
-<div class="d-flex my-2 ">
-<p class="mx-4">Page {{currentPage}} of {{totalPage}}</p>    
-<b-pagination
-      v-model="currentPage"
-      :total-rows="totalRows"
-      :per-page="perPage"
-      aria-controls="my-table"
-      label-next-page="nextPage"
-      label-prev-page="prevPage"
-    >
-    </b-pagination>        
-    </div>
 </div> 
 </div>
 </template>
@@ -147,12 +194,17 @@ export default {
         rounded: 'lg',
         showModal: false,
         hapusData: false,
-        
+        search: false,
       }
     },
     methods: {
-      hideModal() {
-        this.$refs['my-modal'].hide()
+      searchItem(){
+        if(this.search == false){
+        this.search = true
+        }else{
+          this.keyword = ''
+          this.search = false
+        }
       },
       redirect(id) {
               this.$router.push('editpatient/' + id);
@@ -254,13 +306,14 @@ background-color: #F3F3F3;
 }
 .btn{
     
-    height: 33px;
+    /* height: 33px; */
     width: auto;
     margin-left: 5px;
     margin-right: 5px;
     background: #794B93;
 }
 .input-group{
+margin-left: 180px;
     width: 300px;
 }
 
@@ -272,6 +325,10 @@ background-color: #F3F3F3;
     height:15px;
     width:15px; 
 }
+.search{
+    margin-left:41rem ;
+}
+
 
 </style>
 

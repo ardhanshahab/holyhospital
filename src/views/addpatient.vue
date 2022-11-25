@@ -46,8 +46,15 @@
             <div class="row mb-3">
               <label for="inputGender3" class="col-sm-2 col-form-label">Jenis Kelamin</label>
                 <div class="col-sm-10">
-                  <input type="text" v-model="gender" class="form-control" id="inputGender3">
-                    <div v-if="toggleLength" class="d-flex my-1 toggle text-danger">
+                  <div class="row mt-2">
+                  <div class="col-4">
+                  <b-form-radio v-model="gender" :aria-describedby="inputGender3" name="Pria" value="Pria"><p style="margin-left:10px">Pria</p></b-form-radio>
+                  </div>
+                  <div class="col-8">
+                  <b-form-radio v-model="gender" :aria-describedby="inputGender3" name="Wanita" value="Wanita"><p style="margin-left:10px">Wanita</p></b-form-radio>  
+                  </div>
+                </div>
+                  <div v-if="toggleLength" class="d-flex my-1 toggle text-danger">
                         <b-icon icon="info-circle" class="mx-2"></b-icon>{{error.gender}}
                     </div>
               </div>

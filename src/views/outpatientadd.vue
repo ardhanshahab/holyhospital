@@ -11,6 +11,28 @@
           @done="onDone()"
           >
           <template v-slot="{mutate, loading, error}">
+            <div v-if="loading">
+              <b-overlay
+              id="overlay-background"
+              :variant="variant"
+              :opacity="opacity"
+              :blur="blur"
+              :show="show"
+              :rounded="rounded"
+              :isLoading="isLoading"
+              no-wrap
+            ></b-overlay>
+            </div>
+            <div v-if="error">
+              <b-alert
+              v-model="showTop"
+              class="position-fixed fixed-top m-0 rounded-0"
+              style="z-index: 2000;"
+              variant="secondary"
+              >
+              {{error}}
+            </b-alert>
+          </div>
         <b-card bg-variant="light" class="card text-center mx-2 my-2 text-purple">
           <!-- <b-form @submit="onSubmit"> -->
           <b-row class="my-3">  
@@ -22,7 +44,7 @@
                 id="fieldset-1"
               >
               <b-form-select v-model="patient_code" class="hdrop w100">
-                    <option :value="null" disabled>-- Please select an option --</option>
+                    <option :value="null" disabled>-- Pilih --</option>
                     <option v-for="kode in kode_pasien" :key="kode.id" :value="kode.patient_code">
                       {{ kode.patient_code }} {{kode.full_name}}
                     </option>
@@ -70,7 +92,7 @@
             </b-col>
               <b-col cols="10">
                 <b-form-select v-model="medic_session" class="hdrop w100">
-                    <option :value="null" disabled>-- Please select an option --</option>
+                    <option :value="null" disabled>-- Pilih --</option>
                     <option v-for="session in sesi" :key="session.id" :value="session.id">
                       {{ session.name }} {{session.time}}
                     </option>
@@ -87,7 +109,7 @@
             </b-col>
               <b-col cols="10">
                 <b-form-select v-model="doctor_id" class="hdrop w100">
-                    <option :value="null" disabled>-- Please select an option --</option>
+                    <option :value="null" disabled>-- Pilih --</option>
                     <option v-for="doctor in dokter" :key="doctor.id" :value="doctor.id">
                       {{ doctor.name }}
                     </option>
@@ -104,7 +126,7 @@
             </b-col>
               <b-col cols="10">
                 <b-form-select v-model="nurse_id" class="hdrop w100">
-                    <option :value="null" disabled>-- Please select an option --</option>
+                    <option :value="null" disabled>-- Pilih --</option>
                     <option v-for="nurse in perawat" :key="nurse.id" :value="nurse.id">
                       {{ nurse.name }}
                     </option>
@@ -127,7 +149,7 @@
           <b-form-input id="input-4" v-model="queue" trim class="hdrop" disabled></b-form-input>
         </b-form-group>
         <div class="d-flex justify-content-end">
-        <b-btn class="unguprimary" :disabled="loading" @click="mutate()">Submit</b-btn>
+        <b-btn class="unguprimary" @click="mutate()">Submit</b-btn>
         <b-btn class="unguprimary" @click="onReset()">Reset</b-btn>
         </div>
               </b-col>
@@ -168,6 +190,13 @@ export default {
         dokter: [],
         perawat: [],
         kode_pasien: [],
+        showTop: true,
+        variant: 'transparent',
+        opacity: 0.85,
+        blur: '5px',
+        isLoading: true,
+        show: true,
+        rounded: 'lg',
 }
     },
     methods: {

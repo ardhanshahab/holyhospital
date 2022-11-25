@@ -7,7 +7,7 @@
             <b-col cols="10">
             <div class="">
 <b-card img-src="https://i.ibb.co/LY0qTqj/banner.png" img-width="55%" img-alt="Card image" img-left class="text-center p-3">
-            <b-card-title>Holy Hospital</b-card-title>
+            <b-card-title>Hospital Management System</b-card-title>
             <div class="my-3">
             <b-button block class="ungubutton width90" to="/login" >LOGIN</b-button>
             </div>
