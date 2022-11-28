@@ -44,6 +44,7 @@
                     <!-- Result -->
                     <div v-else-if="data" class="result apollo">
                       <div class="card-body">
+                        <div v-if="data.user.length < 1" class="no-result apollo"><b-icon icon="x-lg" variant="danger"></b-icon><p>data tidak ditemukan :(</p></div>
                         <table class="table" id="my-table">
                           <thead>
                             <tr>
@@ -60,7 +61,7 @@
                                           <td scope="row">{{user.email}}</td>
                                           <td scope="row">{{user.gender}}</td>
                                           <td scope="row">{{user.role.name}}</td>
-                                          <td><button @click="redirect(user.id)">EDIT</button></td>
+                                          <td scope="row"><b-button @click="redirect(user.id)" v-b-popover.hover.top="'Edit'" class="btn-success"><b-icon icon="pencil-square"></b-icon></b-button></td>
                             </tr>
                           </tbody>
                         </table>
@@ -95,7 +96,7 @@
                         <td scope="row">{{user.email}}</td>
                         <td scope="row">{{user.gender}}</td>
                         <td scope="row">{{user.role.name}}</td>
-                        <td><button @click="redirect(user.id)">EDIT</button></td>
+                        <td><b-button @click="redirect(user.id)" v-b-popover.hover.top="'Edit'" class="btn-success"><b-icon icon="pencil-square"></b-icon></b-button></td>
           </tr>
         </tbody>
       </table>
@@ -202,7 +203,7 @@ export default {
     },
   mounted() {
     console.log(this.totalRows)
-  const message = this.$localStorage.get('user')
+  const message = this.$localStorage.get('userMessage')
     if(message){
                 this.message = message
                this.showTop = true
@@ -211,7 +212,7 @@ export default {
             this.showTop = false;
             // this.show = false;
             location.reload();
-                this.$localStorage.remove('user')
+            this.$localStorage.remove('userMessage')
             this.showTop = false;
                   }, 2000);
     }
@@ -239,12 +240,7 @@ p {
     background:#F3F3F3;;
     padding-bottom: 3px;
 }
-.btn{
-    
-    height: 33px;
-    width: 55px;
-    background: #794B93;
-}
+
 
 .input-group{
     width: 300px;

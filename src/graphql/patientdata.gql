@@ -1,5 +1,5 @@
 query patientdata {
-  patient {
+  patient (order_by: {id: asc}) {
     id
     full_name
     gender

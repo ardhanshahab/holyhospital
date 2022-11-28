@@ -23,7 +23,7 @@
             <h3 class="titlehero">REPORT PASIEN RAWAT JALAN</h3>
         </div>
         <div class="d-flex justify-content-end  my-3" v-if="sortBy === ''">          
-            <b-button class="lightdark-a text-black"   @click="addoutpatient()">TAMBAH<img src="../assets/Icon/sort oldest to newest.svg" width="28px"/></b-button>
+            <b-button class="btn-info text-black" @click="addoutpatient()">TAMBAH <b-icon icon="plus"></b-icon></b-button>
         </div>
         <div class="d-block" v-if="!show">
 
@@ -38,16 +38,18 @@
 
       class="text-center lightdark-b"
     >
-
+        
         <template #cell(show_detail)="row">
         <div v-if="row.detailsShowing" class="d-flex justify-content-center">
-        <b-button size="sm"  @click="row.toggleDetails" class="mr-2  lightdark">
-        View Report <b-icon icon="caret-up-fill"></b-icon>
+        <b-button class="lightdark" style="margin-right:5px;" v-b-popover.hover.top="'Export ke PDF'" variant="danger" @click="exportToPDF(row.item)"><b-icon icon="file-pdf"></b-icon></b-button>
+        <b-button size="sm" v-b-popover.hover.top="'View Report'" variant="primary" @click="row.toggleDetails" class="mr-2 ml-4 lightdark">
+          <b-icon icon="file-text"></b-icon> <b-icon icon="caret-up-fill"></b-icon>
         </b-button>
         </div>
         <div v-if="!row.detailsShowing" class="d-flex justify-content-center">
-        <b-button size="sm" variant="success" @click="row.toggleDetails" class="mr-2">
-        View Report <b-icon icon="caret-down-fill"></b-icon>
+        <b-button class="lightdark" style="margin-right:5px;" disabled variant="danger" @click="exportToPDF(row.item)"><b-icon icon="file-pdf"></b-icon></b-button>
+        <b-button size="sm" v-b-popover.hover.top="'View Report'" variant="success" @click="row.toggleDetails" class="mr-2">
+        <b-icon icon="file-text"></b-icon> <b-icon icon="caret-down-fill"></b-icon>
         </b-button>
         </div>
         <!-- As `row.showDetails` is one-way, we call the toggleDetails function on @change -->
@@ -55,42 +57,75 @@
       </template>
 
       <template #row-details="row">
-      <b-card class="textdetail lightdark-a">      
-            <b-row class="mb-2">
-            <b-col cols="2" class="text-sm-right"><b>Keluhan</b></b-col>
-            <b-col cols="1" class="d-flex justify-content-end">:</b-col>
-            <b-col cols="9"><b-card class="">{{ row.item.complaint }}</b-card></b-col>
-          </b-row>
+      <b-card class="textdetail lightdark-a" id="element-to-convert">      
 
             <b-row class="mb-2">
-            <b-col cols="2" class="text-sm-right"><b>Hasil Diagnosa</b></b-col>
+            <b-col cols="3" class="text-sm-right"><b>Nama</b></b-col>
             <b-col cols="1" class="d-flex justify-content-end">:</b-col>
-            <b-col cols="9"><b-card class="">{{ row.item.diagnose }}</b-card></b-col>
-          </b-row>
+            <b-col cols="8">{{ row.item.patientByPatientCode.full_name }}</b-col>
+            </b-row>
 
             <b-row class="mb-2">
-            <b-col cols="2" class="text-sm-right"><b>Resep Obat</b></b-col>
+            <b-col cols="3" class="text-sm-right"><b>Kode Pasien</b></b-col>
             <b-col cols="1" class="d-flex justify-content-end">:</b-col>
-            <b-col cols="9"><b-card class="">{{ row.item.drug }}</b-card></b-col>
-          </b-row>
+            <b-col cols="8">{{ row.item.patient_code }}</b-col>
+            </b-row>
+        
+            <b-row class="mb-2">
+            <b-col cols="3" class="text-sm-right"><b>Diperiksa Oleh</b></b-col>
+            <b-col cols="1" class="d-flex justify-content-end">:</b-col>
+            <b-col cols="8">Dokter {{ row.item.doctor_table.name }} dan Suster {{row.item.nurse_table.name}}</b-col>
+            </b-row>
 
-          <b-row class="mb-2">
-            <b-col cols="2" class="text-sm-right"><b>Tinggi</b></b-col>
+            <b-row class="mb-2">
+            <b-col cols="3" class="text-sm-right"><b>Pada Tanggal</b></b-col>
             <b-col cols="1" class="d-flex justify-content-end">:</b-col>
-            <b-col cols="9"><b-card class="">{{ row.item.height }}</b-card></b-col>
-          </b-row>
+            <b-col cols="8">{{row.item.datecheck}}</b-col>
+            </b-row>
 
-          <b-row class="mb-2">
-            <b-col cols="2" class="text-sm-right"><b>Berat</b></b-col>
+            <b-row class="mb-4">
+            <b-col cols="3" class="text-sm-right"><b>Jenis Pemeriksaan</b></b-col>
             <b-col cols="1" class="d-flex justify-content-end">:</b-col>
-            <b-col cols="9"><b-card class="">{{ row.item.weight }}</b-card></b-col>
-          </b-row>
+            <b-col cols="8">{{ row.item.doctor_table.medic_facility.name }}</b-col>
+            </b-row>
+            
 
-          <b-row class="mb-2">
-            <b-col cols="2" class="text-sm-right"><b>Tekanan Darah</b></b-col>
+            <b-row class="mb-2 mt-4">
+            <b-col cols="3" class="text-sm-right"><b>Keluhan</b></b-col>
             <b-col cols="1" class="d-flex justify-content-end">:</b-col>
-            <b-col cols="9"><b-card class="">{{ row.item.bloodtemprature }}</b-card></b-col>
-          </b-row>
+            <b-col cols="8"><b-card class="">{{ row.item.complaint }}</b-card></b-col>
+            </b-row>
+
+            <b-row class="mb-2">
+            <b-col cols="3" class="text-sm-right"><b>Hasil Diagnosa</b></b-col>
+            <b-col cols="1" class="d-flex justify-content-end">:</b-col>
+            <b-col cols="8"><b-card class="">{{ row.item.diagnose }}</b-card></b-col>
+            </b-row>
+
+            <b-row class="mb-2">
+            <b-col cols="3" class="text-sm-right"><b>Resep Obat</b></b-col>
+            <b-col cols="1" class="d-flex justify-content-end">:</b-col>
+            <b-col cols="8"><b-card class="">{{ row.item.drug }}</b-card></b-col>
+            </b-row>
+
+            <b-row class="mb-2">
+            <b-col cols="3" class="text-sm-right"><b>Tinggi</b></b-col>
+            <b-col cols="1" class="d-flex justify-content-end">:</b-col>
+            <b-col cols="8"><b-card class="">{{ row.item.height }}</b-card></b-col>
+            </b-row>
+
+            <b-row class="mb-2">
+            <b-col cols="3" class="text-sm-right"><b>Berat</b></b-col>
+            <b-col cols="1" class="d-flex justify-content-end">:</b-col>
+            <b-col cols="8"><b-card class="">{{ row.item.weight }}</b-card></b-col>
+            </b-row>
+
+            <b-row class="mb-2">
+            <b-col cols="3" class="text-sm-right"><b>Tekanan Darah</b></b-col>
+            <b-col cols="1" class="d-flex justify-content-end">:</b-col>
+            <b-col cols="8"><b-card class="">{{ row.item.bloodtemprature }}</b-card></b-col>
+            </b-row>
+          
       </b-card>
       </template>
 
@@ -108,7 +143,7 @@
 </template>
 
 <script>
-
+import html2pdf from "html2pdf.js"
 import axios from 'axios'
 export default {
     name: "outpatientReport",
@@ -122,11 +157,6 @@ export default {
             const z = y / x  
             return Math.floor(z) + 1       
             },
-    //         listPatient() {
-    //         const items = this.$store.state.outpatient.items
-    //         return items;
-            
-    // },
 
 },
 
@@ -163,12 +193,22 @@ export default {
         addoutpatient() {
           this.$router.push('/addoutpatient');
         },
-        // fetchOutpatient(){
-        //   this.$store.dispatch('outpatient/fetchoutpatientReport')
-        //   this.items = this.$store.state.outpatient.items
-        //   console.log('test', this.items)
-        // }
-    
+        exportToPDF(data) {
+        html2pdf(document.getElementById("element-to-convert"), {
+          margin: 1,
+          image: {
+        type: 'jpeg', 
+        quality: 0.98
+    },
+          filename: data.datecheck + " " + data.patientByPatientCode.full_name + ".pdf",
+			});
+              this.message = "Export to PDF Sukses"
+              this.showTop = true
+              setTimeout(() => {
+              this.showTop = false;
+              this.message = ''
+                  }, 3000);
+    }
   },
   async mounted(){
     try {

@@ -10,15 +10,6 @@
           :isLoading="isLoading"
           no-wrap
         ></b-overlay>
-        <!-- <b-modal ref="my-modal" v-model="showModal" hide-footer title="Hapus Data Pasien">
-      <div class="d-block text-center">
-        <h3>Apakah anda yakin?</h3>
-      </div>
-      <div class="d-block text-center">
-      <b-button class="mt-3" variant="outline-danger" block @click="hideModal">Tidak</b-button>
-      <b-button class="mt-3" variant="outline-success" block @click="hapusData">ya</b-button>
-      </div>
-      </b-modal> -->
     <div class="container" v-if="!show">
      <b-alert
       v-model="showTop"
@@ -35,7 +26,7 @@
 
     <div class="row">
       <div class="col-6">          
-            <b-button class="lightdark-a btn text-white" @click="addpatient()">TAMBAH PASIEN</b-button>
+            <b-button class="btn btn-info text-black" @click="addpatient()">TAMBAH PASIEN <b-icon icon="plus"></b-icon></b-button>
         </div>
         <div class="col-6 ">
       <div class="d-flex input-group mb-3">
@@ -58,7 +49,8 @@
 
       <!-- Result -->
       <div v-else-if="data" class="result apollo">
-            <table class="table">
+        <div v-if="data.patient.length < 1" class="no-result apollo"><b-icon icon="x-lg" variant="danger"></b-icon><p>data tidak ditemukan :(</p></div>
+      <table class="table">
       <thead>
         <tr class="lightdark-a">
           <th scope="col">Kode Pasien</th>
@@ -78,8 +70,8 @@
           <td scope="row">{{user.bloodtype}}</td>
           <td scope="row">{{user.birthdate}}</td>
           <td scope="row">{{user.gender}}</td>
-          <td><button @click="redirect(user.id)" class="btn w100 btn-primary">EDIT</button>
-              <button @click="hapus(user.id)" class="btn w100 btn-danger">DELETE</button></td>
+          <td><button @click="redirect(user.id)" v-b-popover.hover.top="'Edit'" class="btn-success w100 btn"><b-icon icon="pencil-square"></b-icon></button>
+              <button @click="hapus(user.id)" v-b-popover.hover.top="'Hapus'" class="btn w100 btn-danger"><b-icon icon="trash"></b-icon></button></td>
         </tr>
       </tbody>
     </table>
@@ -129,9 +121,8 @@
           <td scope="row">{{user.bloodtype}}</td>
           <td scope="row">{{user.birthdate}}</td>
           <td scope="row">{{user.gender}}</td>
-          <td><button @click="redirect(user.id)" class="btn w100 btn-primary">EDIT</button>
-              <button @click="hapus(user.id)" class="btn w100 btn-danger">DELETE</button></td>
-        </tr>
+          <td><button @click="redirect(user.id)" v-b-popover.hover.top="'Edit'" class="btn-success w100 btn"><b-icon icon="pencil-square"></b-icon></button>
+              <button @click="hapus(user.id)" v-b-popover.hover.top="'Hapus'" class="btn w100 btn-danger"><b-icon icon="trash"></b-icon></button></td>        </tr>
       </tbody>
     </table>
       </div>
@@ -250,8 +241,8 @@ export default {
       // this.$router.go(0)
         const message = this.$localStorage.get('patient')
        if(message){
-        // location.reload(),
           this.message = message
+          this.$localStorage.set('patient2', this.message)
                this.showTop = true
                this.show = true;
               setTimeout(() => {
@@ -259,8 +250,16 @@ export default {
             // this.show = false;
             location.reload();
             localStorage.removeItem('patient');
-                  }, 3000);
-                  
+                  }, 1000); 
+       }
+       const message2 = this.$localStorage.get('patient2')
+       if(message2){
+        this.message = message2
+        this.showTop = true
+        setTimeout(() => {
+            this.showTop = false;
+            localStorage.removeItem('patient2');
+          }, 3000); 
        }
     },
 }
@@ -310,7 +309,7 @@ background-color: #F3F3F3;
     width: auto;
     margin-left: 5px;
     margin-right: 5px;
-    background: #794B93;
+    /* background: #794B93; */
 }
 .input-group{
 margin-left: 180px;

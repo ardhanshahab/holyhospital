@@ -33,6 +33,7 @@
 
                     <!-- Result -->
                     <div v-else-if="data" class="result apollo">
+                        <div v-if="data.schedule.length < 1" class="no-result apollo"><b-icon icon="x-lg" variant="danger"></b-icon><p>data tidak ditemukan :(</p></div>
                         <ul class="list-group list-group-light" v-for="schedule in data.schedule" :key="schedule.id">
                         <li class="list-group-item d-flex justify-content-between align-items-center">
                             <div class="text-align-left">

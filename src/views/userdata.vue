@@ -194,7 +194,7 @@ export default {
       });
               this.$router.push({name: 'manageUser'})
               const message = 'Data Telah Berhasil Diubah'
-              this.$localStorage.set('user', message)
+              this.$localStorage.set('userMessage', message)
               console.log(message)
       }
       },
