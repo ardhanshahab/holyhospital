@@ -13,34 +13,40 @@
             <div class="d-block">
               <b-card bg-variant="light" class="card text-center mx-2 my-2 text-purple">
               <!-- <b-form @submit="onSubmit" @reset="onReset"> -->
-            <b-row class="my-3">
-              <b-col cols="2">
-                <label class="mt-2" aria-controls="fieldset-1">Nama Doctor</label>
+                <b-row class="my-3">
+            <b-col cols="2">
+              <label class="mt-2" aria-controls="fieldset-6">Nama Dokter</label>
+            </b-col>
+              <b-col cols="10">
+                <b-form-select v-model="doctor_id" class="hdrop w100">
+                    <option :value="null" disabled>-- Pilih --</option>
+                    <option v-for="nurse in dokter" :key="nurse.id" :value="nurse.id">
+                      {{ nurse.name }}
+                    </option>
+                  </b-form-select>
+                        <div v-if="toggleLength" class="d-flex mx-2 toggle text-danger">
+            <b-icon icon="info-circle" class="mx-2"></b-icon>{{error.doctor_code}}
+          </div>
               </b-col>
-                <b-col cols="10">
-                          <b-form-select
-                          id="input-3"
-                          v-model="doctor_id"
-                          :options="dokter"
-                          required
-                          class="w-100 hdrop selectWrapper"
-                        ></b-form-select>
-                </b-col>
-            </b-row>
+          </b-row>
+
             <b-row class="my-3">
-              <b-col cols="2">
-                <label class="mt-2" aria-controls="fieldset-1">Nama Nurse</label>
+            <b-col cols="2">
+              <label class="mt-2" aria-controls="fieldset-6">Nama Perawat</label>
+            </b-col>
+              <b-col cols="10">
+                <b-form-select v-model="nurse_id" class="hdrop w100">
+                    <option :value="null" disabled>-- Pilih --</option>
+                    <option v-for="nurse in perawat" :key="nurse.id" :value="nurse.id">
+                      {{ nurse.name }}
+                    </option>
+                  </b-form-select>
+                        <div v-if="toggleLength" class="d-flex mx-2 toggle text-danger">
+            <b-icon icon="info-circle" class="mx-2"></b-icon>{{error.doctor_code}}
+          </div>
               </b-col>
-                <b-col cols="10">
-                          <b-form-select
-                          id="input-3"
-                          v-model="nurse_id"
-                          :options="nurse"
-                          required
-                          class="w-100 hdrop selectWrapper"
-                        ></b-form-select>
-                </b-col>
-            </b-row>
+          </b-row>
+
             <b-row class="my-3">
               <b-col cols="2">
                 <label class="mt-2" aria-controls="fieldset-1">Jenis Perawatan</label>
@@ -59,21 +65,24 @@
                  <b-form-datepicker id="example-datepicker" v-model="date" class="mb-2 hdrop"></b-form-datepicker>
                 </b-col>
             </b-row>
+
                   <b-row class="my-3">
-                      <b-col cols="2">
-                        <label class="mt-2" aria-controls="fieldset-1">Pilih Sesi</label>
-                      </b-col>
-                      <b-col cols="10">
-                        <b-form-select
-                          id="input-3"
-                          v-model="session_id"
-                          :options="sesi"
-                          required
-                          class="w-100 hdrop"
-                        >
-                      </b-form-select>
-                      </b-col>
-                  </b-row>
+            <b-col cols="2">
+              <label class="mt-2" aria-controls="fieldset-6">Sesi</label>
+            </b-col>
+              <b-col cols="10">
+                <b-form-select v-model="session_id" class="hdrop w100">
+                    <option :value="null" disabled>-- Pilih --</option>
+                    <option v-for="nurse in sesi" :key="nurse.id" :value="nurse.id">
+                      {{ nurse.name }}
+                    </option>
+                  </b-form-select>
+                        <div v-if="toggleLength" class="d-flex mx-2 toggle text-danger">
+            <b-icon icon="info-circle" class="mx-2"></b-icon>{{error.doctor_code}}
+          </div>
+              </b-col>
+          </b-row>
+
               <div class="d-flex mx-2 justify-content-end">
               <b-button :disabled="loading" @click="mutate()" class="unguprimary btnset">Submit</b-button>
               </div>
@@ -115,22 +124,14 @@
         return {
           jenis_perawatan: 'Rawat Jalan',
           date: '',
-          session_id: '',
-          doctor_id: '',
-          nurse_id: '',
+          session_id: null,
+          doctor_id: null,
+          nurse_id: null,
           sesi: [
-            { value: null, text: 'Pilih' },
-            { value: '1', text: 'Pagi' },
-            { value: '2', text: 'Siang' },
-            { value: '3', text: 'Malam' }
           ],
           dokter: [
-            { value: null, text: 'Pilih' },
-            { value: '1', text: 'Hanna' }
           ],
-          nurse: [
-            { value: null, text: 'Pilih' },
-            { value: '2', text: 'Eli' }
+          perawat: [
           ],        
      }
       },
@@ -147,15 +148,25 @@
           }
       },
       async mounted() {
-          try {
-            const response = await axios.get('wsschedule');
-          // this.dokter = response.data.medical_staff
-          // this.sesi = response.data.session 
-            console.log(response.data)
-          } catch(e) {
-            console.log(e);
-          }
+    try {
+    const response = await axios.get('antrian');
+    const antrian = response.data.medic_record.length
+    const dokter = response.data.doctor_table
+    const perawat = response.data.nurse_table
+    const pasien = response.data.patient
+    const session = response.data.session
+    this.kode_pasien = pasien 
+    this.perawat = perawat
+    this.dokter = dokter
+    this.queue = antrian + 1
+    this.sesi = session
+    
+    console.log(response.data.medic_session.length)
+  } catch(e) {
+    console.log(e);
+
         }
+      }
   }
   </script>
   
@@ -169,12 +180,16 @@
   }
   .hdrop {
     height: 38px;
-    margin-top: 5px;
-    margin-bottom: 5px;
-   border-radius: 5px; 
-   border: 1px solid #1b1515;
-   background: #F3F3F3;
+  margin-top: 5px;
+  margin-bottom: 5px;
+ border-radius: 5px; 
+ border: 1px solid #1b1515;
+ background: #F3F3F3;
+
   }
+  .w100{
+  width: 100%;
+}
   /* .selectWrapper{
     border-radius:5px;
     overflow:hidden;

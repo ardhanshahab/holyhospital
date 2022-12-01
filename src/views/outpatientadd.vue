@@ -78,7 +78,7 @@
               <b-form-group
                 id="fieldset-3"
               >
-          <b-form-input id="input-3" v-model="complaint" trim class="hdrop"></b-form-input>
+          <b-form-input id="input-3" v-model="complaint" trim class="hdrop" placeholder="Keluhan"></b-form-input>
           <div v-if="toggleLength" class="d-flex mx-2 toggle text-danger">
             <b-icon icon="info-circle" class="mx-2"></b-icon><p>{{error.complaint}}</p>
           </div>

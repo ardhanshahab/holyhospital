@@ -16,7 +16,7 @@
             <div class="row mb-3">
               <label for="inputEmail3" class="col-sm-2 col-form-label">Nama Pasien</label>
                 <div class="col-sm-10">
-                  <input type="name" v-model="full_name" class="form-control" id="inputEmail3">
+                  <input type="name" v-model="full_name" class="form-control" id="inputEmail3" placeholder="nama">
                     <div v-if="toggleLength" class="d-flex my-1 toggle text-danger">
                         <b-icon icon="info-circle" class="mx-2"></b-icon>{{error.full_name}}
                     </div>
@@ -26,7 +26,7 @@
             <div class="row mb-3">
               <label for="inputNik3" class="col-sm-2 col-form-label">NIK</label>
                 <div class="col-sm-10">
-                  <input type="number" v-model="national_id" class="form-control" id="inputNik3">
+                  <input type="number" v-model="national_id" class="form-control" id="inputNik3" placeholder="xxxxxxxxxxx">
                     <div v-if="toggleLength" class="d-flex my-1 toggle text-danger">
                         <b-icon icon="info-circle" class="mx-2"></b-icon>{{error.national_id}}
                     </div>
@@ -36,7 +36,7 @@
             <div class="row mb-3">
               <label for="inputAlamat3" class="col-sm-2 col-form-label">Alamat</label>
                 <div class="col-sm-10">
-                  <input type="text" v-model="address" class="form-control" id="inputAlamat3">
+                  <input type="text" v-model="address" class="form-control" id="inputAlamat3" placeholder="xxxxxxxxxxx">
                     <div v-if="toggleLength" class="d-flex my-1 toggle text-danger">
                         <b-icon icon="info-circle" class="mx-2"></b-icon>{{error.address}}
                     </div>
@@ -73,7 +73,7 @@
             <div class="row mb-3">
               <label for="inputBlood3" class="col-sm-2 col-form-label">Golongan Darah</label>
                 <div class="col-sm-10">
-                  <input type="text" v-model="bloodtype" class="form-control" id="inputBlood3">
+                  <input type="text" v-model="bloodtype" class="form-control" id="inputBlood3"  placeholder="A">
                     <div v-if="toggleLength" class="d-flex my-1 toggle text-danger">
                       <b-icon icon="info-circle" class="mx-2"></b-icon>{{error.blood_type}}
                     </div>
@@ -84,7 +84,7 @@
               <label for="inputkode3" class="col-sm-2 col-form-label">Kode Pasien</label>
                 <div class="col-sm-10">
                     Kode Pasien yang tersedia : RJ0100{{kodepasien}}
-                  <input type="text" hint="RJ" v-model="patient_code" class="form-control" id="inputkode3">
+                  <input type="text" hint="RJ" v-model="patient_code" class="form-control" id="inputkode3" placeholder="RJ0100">
                     <div v-if="toggleLength" class="d-flex my-1 toggle text-danger">
                       <b-icon icon="info-circle" class="mx-2"></b-icon>{{error.blood_type}}
                     </div>
